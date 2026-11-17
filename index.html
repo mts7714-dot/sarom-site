@@ -81,6 +81,7 @@
   .aromas{display:flex;flex-wrap:wrap;gap:6px}
   .aromas button{border:1px solid var(--linha);background:var(--creme);color:var(--texto);border-radius:999px;padding:5px 12px;font:13.5px Jost,sans-serif;cursor:pointer}
   .aromas button[aria-pressed=true]{border-color:var(--dourado);background:#F6E9D3;color:var(--marrom)}
+  /* REGRA: aroma + preço + botão sempre no fim do card, na mesma linha em todos */
   .card .base{margin-top:auto;display:flex;flex-direction:column;gap:8px;padding-top:4px}
   .card .acoes{padding-top:8px;display:flex;gap:8px}
   .card .acoes .botao{flex:1;justify-content:center;padding:11px 14px;font-size:14px}
@@ -448,7 +449,10 @@ const ESSENCIAS = {
   "Bambu":              {cor:"#B9C9A3", notas:"Verde, limpo e leve.", em:"Em breve"},
 };
 
-/* Produtos. REGRA: um card para cada produto + aroma, cada um com a sua foto.
+/* Produtos. REGRAS:
+   1) Um card para cada produto + aroma, cada um com a sua foto.
+   2) Aroma, preço e botão ficam sempre alinhados no fim do card (bloco .base),
+      não importa o tamanho do título ou da descrição. Todo card novo segue isso sozinho.
    Para um aroma novo, copie um card, troque id, nome, foto e aromas.
    preco: deixe null para mostrar "Consulte o valor".
    foto: caminho da foto real. ilustr: desenho ilustrativo (produto ainda não criado). */
