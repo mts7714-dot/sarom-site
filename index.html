@@ -81,7 +81,9 @@
   .aromas{display:flex;flex-wrap:wrap;gap:6px}
   .aromas button{border:1px solid var(--linha);background:var(--creme);color:var(--texto);border-radius:999px;padding:5px 12px;font:13.5px Jost,sans-serif;cursor:pointer}
   .aromas button[aria-pressed=true]{border-color:var(--dourado);background:#F6E9D3;color:var(--marrom)}
-  .card .acoes{margin-top:auto;padding-top:8px;display:flex;gap:8px}
+  /* REGRA: aroma + preço + botão sempre no fim do card, na mesma linha em todos */
+  .card .base{margin-top:auto;display:flex;flex-direction:column;gap:8px;padding-top:4px}
+  .card .acoes{padding-top:8px;display:flex;gap:8px}
   .card .acoes .botao{flex:1;justify-content:center;padding:11px 14px;font-size:14px}
   .aviso-ilustr{font-size:12px;color:var(--suave);font-style:italic}
 
@@ -114,7 +116,12 @@
   footer a{color:#fff}
 
   /* lista de pedido */
-  .lista-btn{position:fixed;right:16px;bottom:16px;z-index:30;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+  .duvida-btn{position:fixed;right:16px;bottom:16px;z-index:31;display:inline-flex;align-items:center;gap:10px;background:var(--branco);color:var(--marrom);border:1px solid var(--dourado);border-radius:999px;padding:8px 18px 8px 8px;text-decoration:none;box-shadow:0 6px 20px rgba(60,35,20,.18);font:500 14.5px/1.2 Jost,sans-serif;transition:transform .2s}
+  .duvida-btn:hover{transform:translateY(-2px)}
+  .duvida-btn .ico{flex:none;display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--zap);color:#fff}
+  .duvida-btn small{display:block;font-weight:400;font-size:12.5px;color:var(--suave)}
+  @media (max-width:640px){ .duvida-btn{padding:6px 14px 6px 6px;font-size:13.5px} .duvida-btn small{display:none} .duvida-btn .ico{width:30px;height:30px} }
+  .lista-btn{position:fixed;right:16px;bottom:76px;z-index:30;box-shadow:0 6px 20px rgba(0,0,0,.18)}
   .lista-btn[hidden]{display:none}
   .lista-btn b{background:#fff;color:var(--zap);border-radius:999px;padding:0 8px;font-size:13px}
   dialog{border:0;border-radius:18px;padding:0;width:min(440px,calc(100% - 32px));color:var(--texto);background:var(--branco)}
@@ -126,8 +133,100 @@
   .item .qtd button{width:28px;height:28px;border-radius:50%;border:1px solid var(--linha);background:var(--creme);cursor:pointer;font-size:16px;line-height:1}
   .dlg .rodape{display:flex;gap:8px;margin-top:18px}
   .dlg .rodape .botao{flex:1;justify-content:center}
-  .toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:var(--marrom);color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:40}
+  .toast{position:fixed;left:50%;bottom:136px;transform:translateX(-50%);background:var(--marrom);color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:40}
   .toast.on{opacity:1}
+
+  /* monte seu kit */
+  .filtros button.kit-aba{border-color:var(--dourado);color:var(--marrom)}
+  .filtros button.kit-aba[aria-pressed=true]{background:var(--dourado);border-color:var(--dourado);color:#fff}
+  .etiqueta.novo{background:var(--salvia);color:#fff}
+  #kit[hidden],#grade[hidden]{display:none}
+  .kit{display:grid;grid-template-columns:1fr 340px;gap:26px;align-items:start}
+  .kit-intro{grid-column:1/-1;text-align:center;color:var(--suave);margin:-6px 0 4px}
+  .etapa{background:var(--branco);border:1px solid var(--linha);border-radius:16px;padding:18px 18px 8px;margin-bottom:18px}
+  .etapa-topo{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .etapa-num{flex:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--marrom);color:#fff;font-family:"Cormorant Garamond",serif;font-size:19px}
+  .etapa h3{font-size:25px}
+  .etapa-topo p{margin:0;color:var(--suave);font-size:14px}
+  .nao-quero{display:inline-flex;align-items:center;gap:8px;margin:6px 0 10px;font-size:14.5px;color:var(--marrom2);cursor:pointer;user-select:none}
+  .nao-quero input{width:18px;height:18px;accent-color:var(--marrom)}
+  .opcao{display:flex;gap:14px;padding:12px 0;border-top:1px solid var(--linha)}
+  .opcao .mini{flex:none;width:76px;height:76px;border-radius:12px;object-fit:cover;object-position:50% 72%;background:var(--creme2)}
+  div.mini{overflow:hidden}
+  .mini svg{width:100%;height:100%;display:block}
+  .opcao .corpo{flex:1;min-width:0}
+  .opcao h4{margin:0;font:500 16px Jost,sans-serif;color:var(--marrom)}
+  .opcao .sub{font-size:13.5px;color:var(--suave);margin:2px 0 8px}
+  .ess-linha{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 0}
+  .ess-linha span{display:flex;align-items:center;gap:8px;font-size:15px}
+  .ess-linha i{width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,0,0,.08);flex:none}
+  .passo-qtd{display:flex;align-items:center;gap:4px}
+  .passo-qtd button{width:32px;height:32px;border-radius:50%;border:1px solid var(--linha);background:var(--creme);color:var(--marrom);cursor:pointer;font-size:18px;line-height:1}
+  .passo-qtd button:disabled{opacity:.35;cursor:default}
+  .passo-qtd b{min-width:22px;text-align:center;font-weight:500}
+  .ess-linha.tem b{color:var(--dourado)}
+  .etapa.desligada .opcao{opacity:.4;pointer-events:none}
+  .breve-box{border-top:1px solid var(--linha);padding:14px 0 12px;color:var(--suave);font-size:14.5px}
+  .breve-box b{color:var(--marrom)}
+  .resumo{position:sticky;top:84px;background:var(--branco);border:1px solid var(--dourado);border-radius:16px;padding:20px}
+  .resumo h3{font-size:26px;margin-bottom:6px}
+  .resumo ul{list-style:none;margin:0 0 6px;padding:0}
+  .resumo li{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--linha);font-size:14.5px}
+  .resumo li.sem{color:var(--suave);font-style:italic}
+  .resumo .vazio{color:var(--suave);font-size:14.5px;margin:8px 0}
+  .resumo label.extra{display:flex;align-items:center;gap:8px;font-size:14.5px;margin:12px 0 4px;cursor:pointer}
+  .resumo label.extra input{width:18px;height:18px;accent-color:var(--marrom)}
+  .resumo textarea{width:100%;border:1px solid var(--linha);border-radius:10px;padding:9px 11px;font:14px Jost,sans-serif;resize:vertical;min-height:58px;margin-top:6px;background:var(--creme)}
+  .resumo .total{display:flex;justify-content:space-between;font-weight:500;color:var(--marrom);margin:14px 0 4px;font-size:16px}
+  .resumo .regra{font-size:13px;color:var(--suave);margin:2px 0 12px}
+  .resumo .regra.ok{color:var(--salvia)}
+  .resumo .botao{width:100%;justify-content:center}
+  .resumo .botao[aria-disabled=true]{opacity:.45;pointer-events:none}
+  .resumo .limpar{display:block;margin:10px auto 0;background:none;border:0;color:var(--suave);font:13.5px Jost,sans-serif;text-decoration:underline;cursor:pointer}
+  .kit-barra{display:none}
+  @media (max-width:860px){ .kit{grid-template-columns:1fr} .resumo{position:static}
+    .kit-barra{position:fixed;left:16px;bottom:76px;z-index:30;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+    .kit-barra.on{display:inline-flex}
+    .opcao .mini{width:58px;height:58px} .opcao{gap:12px} }
+  /* natal */
+  .natal{display:grid;grid-template-columns:1fr 1.15fr;gap:36px;align-items:center;background:var(--branco);border:1px solid var(--linha);border-radius:20px;padding:28px;position:relative;overflow:hidden}
+  .natal svg{width:100%;max-width:380px;margin:0 auto;display:block}
+  .natal .selo{display:inline-block;font-size:12px;letter-spacing:.16em;text-transform:uppercase;background:#8E2B2B;color:#fff;border-radius:999px;padding:5px 12px;margin-bottom:12px}
+  .natal h2{font-size:clamp(30px,4.5vw,40px)}
+  .natal p{color:var(--suave);font-size:16.5px;margin:12px 0 18px}
+  .natal ul{margin:0 0 20px;padding-left:18px;color:var(--texto);font-size:15px}
+  @media (max-width:760px){ .natal{grid-template-columns:1fr;padding:20px;gap:18px} }
+
+  /* entrega */
+  .infos{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px}
+  .info-box{background:var(--branco);border:1px solid var(--linha);border-radius:14px;padding:16px}
+  .info-box .ic{font-size:22px;line-height:1;margin-bottom:8px}
+  .info-box h4{margin:0 0 4px;font:500 16px Jost,sans-serif;color:var(--marrom)}
+  .info-box p{margin:0;color:var(--suave);font-size:14.5px}
+  @media (max-width:860px){ .infos{grid-template-columns:1fr 1fr} }
+  @media (max-width:480px){ .infos{grid-template-columns:1fr} }
+
+  /* depoimentos */
+  .depos{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .depo{background:var(--branco);border:1px solid var(--linha);border-radius:16px;padding:22px;position:relative}
+  .depo:before{content:"“";position:absolute;top:-6px;left:16px;font:600 64px "Cormorant Garamond",serif;color:var(--dourado);opacity:.5}
+  .depo p{margin:18px 0 12px;font-size:15.5px}
+  .depo small{color:var(--salvia);letter-spacing:.04em}
+  .depo.vazio{border-style:dashed;background:rgba(255,255,255,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:170px;color:var(--suave)}
+  .depo.vazio:before{display:none}
+  .depo.vazio .estrelas{color:var(--dourado);letter-spacing:4px;margin-bottom:8px;opacity:.6}
+  @media (max-width:760px){ .depos{grid-template-columns:1fr} .depo.vazio.extra{display:none} }
+
+  /* perguntas */
+  .faq{max-width:780px;margin:0 auto}
+  .faq details{background:var(--branco);border:1px solid var(--linha);border-radius:14px;margin-bottom:10px;padding:0 18px}
+  .faq summary{cursor:pointer;list-style:none;padding:16px 28px 16px 0;font-weight:500;color:var(--marrom);position:relative}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary:after{content:"+";position:absolute;right:0;top:12px;font-size:22px;color:var(--dourado)}
+  .faq details[open] summary:after{content:"−"}
+  .faq details p,.faq details ul{margin:0 0 16px;color:var(--suave);font-size:15px}
+  .faq details ul{padding-left:20px}
+  .faq details li{margin-bottom:4px}
 </style>
 </head>
 <body>
@@ -137,8 +236,10 @@
     <a class="marca" href="#inicio"><img src="img/logo.jpg" alt="Logo SAROM"><span>SAROM</span></a>
     <nav>
       <a href="#produtos">Produtos</a>
+      <a href="#monte-seu-kit" data-abrir-kit>Monte seu kit</a>
       <a href="#essencias">Essências</a>
       <a href="#como-comprar">Como comprar</a>
+      <a href="#duvidas">Dúvidas</a>
       <a href="#sobre">Sobre</a>
     </nav>
   </div>
@@ -164,6 +265,50 @@
       <div class="titulo"><h2>Nossos produtos</h2><p>Escolha o produto e o aroma, e finalize o pedido pelo WhatsApp.</p><div class="enfeite"></div></div>
       <div class="filtros" id="filtros"></div>
       <div class="grade" id="grade"></div>
+      <div class="kit" id="kit" hidden>
+        <p class="kit-intro">Escolha quantas velas, sabonetes e difusores quiser, cada um com a sua essência. No fim, o kit vai pronto para o nosso WhatsApp.</p>
+        <div id="kit-etapas"></div>
+        <aside class="resumo" aria-live="polite">
+          <h3>Seu kit</h3>
+          <div id="kit-resumo"></div>
+          <label class="extra"><input type="checkbox" id="kit-presente"> Embalagem para presente</label>
+          <label class="extra"><input type="checkbox" id="kit-cartao-on"> Incluir cartão com mensagem</label>
+          <textarea id="kit-cartao" placeholder="Escreva a mensagem do cartão" maxlength="200" hidden></textarea>
+          <div class="total"><span>Total</span><span id="kit-total">Consulte o valor</span></div>
+          <p class="regra" id="kit-obs" style="margin-top:-2px"></p>
+          <p class="regra" id="kit-regra"></p>
+          <a class="botao zap" id="kit-enviar" href="#" target="_blank" rel="noopener" aria-disabled="true">Enviar kit no WhatsApp</a>
+          <button class="limpar" id="kit-limpar" type="button">Recomeçar o kit</button>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section id="natal" style="padding-top:8px">
+    <div class="wrap">
+      <div class="natal">
+        <svg viewBox="0 0 320 300" role="img" aria-label="Ilustração da mini vela de Natal SAROM, com Feliz Natal na tampa">
+          <rect width="320" height="300" rx="16" fill="#F4EBDF"/>
+          <g fill="#7F8458" opacity=".55"><path d="M34 70 l10 -22 l10 22 h-6 l8 16 h-24 l8 -16z"/><path d="M270 214 l10 -22 l10 22 h-6 l8 16 h-24 l8 -16z"/></g>
+          <g fill="#A8792E"><circle cx="60" cy="230" r="3"/><circle cx="262" cy="64" r="3"/><circle cx="286" cy="110" r="2"/><circle cx="40" cy="140" r="2"/></g>
+          <ellipse cx="160" cy="246" rx="104" ry="14" fill="#E3D3BE"/>
+          <ellipse cx="160" cy="214" rx="100" ry="30" fill="#9A9EA3"/>
+          <rect x="60" y="150" width="200" height="64" fill="#B9BCC0"/>
+          <ellipse cx="160" cy="150" rx="100" ry="30" fill="#D4D6D9" stroke="#A9ACB0" stroke-width="2"/>
+          <ellipse cx="160" cy="150" rx="86" ry="24" fill="#E6E7E9"/>
+          <text x="160" y="150" text-anchor="middle" font-family="Cormorant Garamond,serif" font-style="italic" font-size="28" fill="#8E2B2B">Feliz Natal</text>
+          <g transform="translate(160,186)"><rect x="-44" y="-12" width="88" height="24" rx="12" fill="#FFFDF9" stroke="#C9A877"/><text y="5" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="14" letter-spacing="3" fill="#5E3319">SAROM</text></g>
+          <g transform="translate(234,184)"><circle r="15" fill="#8E2B2B"/><path d="M-6 -2 l6 -8 l6 8 h-3 l4 6 h-14 l4 -6z" fill="#F4EBDF"/></g>
+        </svg>
+        <div>
+          <span class="selo">Natal · em produção</span>
+          <h2>Mini vela de Natal</h2>
+          <p>A nossa mini vela ganhou roupa de festa: “Feliz Natal” na tampa e um adesivo especial. Um presente pequeno e cheiroso para amigo secreto, lembrancinha da família ou da equipe do trabalho.</p>
+          <ul><li>Mesma base da mini vela de 20 g</li><li>“Feliz Natal” na tampa e adesivo temático</li><li>Encomendas em quantidade: consulte</li></ul>
+          <a class="botao zap" id="zap-natal" href="#" target="_blank" rel="noopener">Quero reservar</a>
+          <p class="aviso-ilustr" style="margin:10px 0 0;font-size:13px">Imagem ilustrativa. Produto em produção.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -179,10 +324,59 @@
       <div class="titulo"><h2>Como comprar</h2><div class="enfeite"></div></div>
       <div class="passos">
         <div class="passo"><h3>Escolha</h3><p>Veja os produtos, escolha o aroma e toque em “Adicionar”. Pode montar uma lista com vários itens.</p></div>
-        <div class="passo"><h3>Envie pelo WhatsApp</h3><p>Sua lista vai pronta para o nosso WhatsApp. Lá confirmamos valores, estoque e prazo.</p></div>
-        <div class="passo"><h3>Receba</h3><p>Combinamos entrega ou retirada em São Paulo. Pagamento por Pix ou cartão.</p></div>
+        <div class="passo"><h3>Envie pelo WhatsApp</h3><p>Sua lista vai pronta, com os valores, para o nosso WhatsApp. Lá calculamos o frete e confirmamos o prazo.</p></div>
+        <div class="passo"><h3>Receba</h3><p>Entregamos em São Paulo e região, ou você retira com a gente. Pagamento por Pix ou cartão.</p></div>
+      </div>
+      <div class="infos">
+        <div class="info-box"><div class="ic">📍</div><h4>Onde entregamos</h4><p>São Paulo capital e região.</p></div>
+        <div class="info-box"><div class="ic">🚚</div><h4>Frete</h4><p>Calculado conforme o seu CEP ou localização. Informamos o valor no WhatsApp antes de fechar.</p></div>
+        <div class="info-box"><div class="ic">🤝</div><h4>Retirada</h4><p>Também dá para retirar, sem frete. Combinamos o local e o horário.</p></div>
+        <div class="info-box"><div class="ic">💳</div><h4>Pagamento</h4><p>Pix ou cartão.</p></div>
       </div>
       <p style="text-align:center;margin-top:28px"><a class="botao zap" id="zap-geral" href="#" target="_blank" rel="noopener">Falar no WhatsApp</a></p>
+    </div>
+  </section>
+
+  <section id="depoimentos" style="background:var(--creme2)">
+    <div class="wrap">
+      <div class="titulo"><h2>Quem já sentiu o momento</h2><p>As primeiras amostras estão saindo agora. Em breve, as opiniões de quem experimentou aparecem aqui.</p><div class="enfeite" style="--creme:var(--creme2)"></div></div>
+      <div class="depos" id="depos"></div>
+    </div>
+  </section>
+
+  <section id="duvidas">
+    <div class="wrap">
+      <div class="titulo"><h2>Perguntas frequentes</h2><div class="enfeite"></div></div>
+      <div class="faq">
+        <details open><summary>Quanto tempo dura cada vela?</summary>
+          <p>Depende de como ela é acesa, mas em média: a <b>mini vela de 20 g</b> rende cerca de <b>4 a 6 horas</b> de queima, e a <b>vela no pote de vidro de 40 g</b> rende cerca de <b>8 a 12 horas</b>. Acender em ciclos de 1 a 2 horas ajuda a vela a durar mais.</p></details>
+        <details><summary>Como cuidar da vela?</summary>
+          <ul>
+            <li>Na primeira vez, deixe acesa até a cera derreter por igual até a borda (cerca de 1 hora). Isso evita que ela “afunde” no meio.</li>
+            <li>Antes de acender de novo, corte o pavio deixando uns 5 mm.</li>
+            <li>Não deixe acesa por mais de 3 a 4 horas seguidas.</li>
+            <li>Nunca deixe a vela acesa sozinha, e mantenha longe de cortinas, correntes de vento, crianças e animais.</li>
+            <li>Coloque sobre uma superfície que aguente calor. O pote e a tampa esquentam.</li>
+            <li>Apague quando restar cerca de 1 cm de cera no fundo.</li>
+          </ul></details>
+        <details><summary>E o sabonete, como conservar?</summary>
+          <ul>
+            <li>Use uma saboneteira com furos, para ele secar entre um banho e outro. Assim dura bem mais.</li>
+            <li>Deixe longe do jato do chuveiro.</li>
+            <li>As sementes fazem uma esfoliação suave. Se sua pele for sensível, teste antes numa área pequena.</li>
+            <li>Uso externo. Guarde em local fresco e sem sol direto.</li>
+          </ul></details>
+        <details><summary>Vocês entregam onde? Quanto custa o frete?</summary>
+          <p>Entregamos em São Paulo capital e região. O frete é calculado pelo seu CEP ou localização, e passamos o valor no WhatsApp antes de você confirmar. Se preferir, pode retirar sem frete.</p></details>
+        <details><summary>Quais as formas de pagamento?</summary>
+          <p>Pix ou cartão. Combinamos tudo pelo WhatsApp.</p></details>
+        <details><summary>Qual o prazo?</summary>
+          <p>Nossos produtos são feitos à mão, em pequenos lotes. Quando tem pronta entrega, enviamos em poucos dias. Se precisar produzir, avisamos o prazo certinho no WhatsApp antes de fechar o pedido.</p></details>
+        <details><summary>Posso montar um kit para presente?</summary>
+          <p>Pode! Use o <a href="#monte-seu-kit" data-abrir-kit>Monte seu kit</a>: você escolhe as velas, os sabonetes e as essências, e pode pedir embalagem para presente e um cartão com mensagem.</p></details>
+        <details><summary>Fazem lembrancinhas em quantidade?</summary>
+          <p>Fazemos, para festas, eventos, empresas e Natal. Chame no WhatsApp com a quantidade e a data, e montamos uma proposta.</p></details>
+      </div>
     </div>
   </section>
 
@@ -192,8 +386,9 @@
       <div>
         <h2 style="font-size:clamp(30px,4.5vw,40px)">Sobre a SAROM</h2>
         <div class="enfeite" style="margin:14px 0 18px;--creme:var(--creme2)"></div>
-        <p>A SAROM nasceu da vontade de transformar pequenos momentos do dia em pausas de cuidado. Cada sabonete e cada vela é feito à mão, em pequenos lotes, aqui em São Paulo.</p>
-        <p>Usamos cera vegetal de coco nas velas e base glicerinada nos sabonetes, com essências selecionadas e embalagens pensadas para presentear.</p>
+        <p>A SAROM é uma marca de produtos artesanais feitos à mão, em pequenos lotes, aqui em São Paulo: sabonetes, velas aromáticas e aromatizadores pensados para deixar a casa mais acolhedora e para presentear.</p>
+        <p>O nome SAROM representa beleza, pureza, resiliência e prosperidade, e carrega o simbolismo da graça e do acolhimento. É isso que queremos levar para cada casa.</p>
+        <p>Usamos cera vegetal de coco nas velas e base glicerinada nos sabonetes, com essências selecionadas e embalagens caprichadas. Cada peça é criada com amor, do aroma ao acabamento.</p>
       </div>
     </div>
   </section>
@@ -206,18 +401,24 @@
       <small>Sinta o momento · São Paulo, SP</small>
     </div>
     <div style="text-align:right">
-      <div><a id="zap-rodape" href="#" target="_blank" rel="noopener">WhatsApp</a> · <a id="insta" href="#" target="_blank" rel="noopener">@sarom_aromas</a></div>
+      <div><a id="zap-rodape" href="#" target="_blank" rel="noopener">WhatsApp</a> · <span id="insta">Instagram em breve</span></div>
       <small>Imagens marcadas como “ilustrativa” representam produtos em desenvolvimento.</small>
     </div>
   </div>
 </footer>
 
+<button class="botao kit-barra" id="kit-barra">Ver meu kit <b id="kit-barra-qtd" style="background:#fff;color:var(--marrom);border-radius:999px;padding:0 8px;font-size:13px">0</b></button>
+<a class="duvida-btn" id="duvida-btn" href="#" target="_blank" rel="noopener" aria-label="Gostei, mas estou com dúvida: falar no WhatsApp">
+  <span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.2-1.2-.2-.2-.4-.3z"/></svg></span>
+  <span>Gostei, mas estou com dúvida<small>Fale com a gente no WhatsApp</small></span>
+</a>
 <button class="botao zap lista-btn" id="lista-btn" hidden>Minha lista <b id="lista-qtd">0</b></button>
 
 <dialog id="dlg">
   <div class="dlg">
     <h3>Minha lista</h3>
     <div id="itens"></div>
+    <p id="lista-total" style="text-align:right;font-weight:500;color:var(--marrom);margin:12px 0 0"></p>
     <div class="rodape">
       <button class="botao claro" id="fechar">Continuar vendo</button>
       <a class="botao zap" id="enviar" href="#" target="_blank" rel="noopener">Enviar no WhatsApp</a>
@@ -231,7 +432,11 @@
    CONFIGURAÇÃO DA LOJA: troque aqui o número e o Instagram
    ========================================================= */
 const WHATSAPP = "5511957756980";         // DDI 55 + DDD + número, só números
-const INSTAGRAM = "https://instagram.com/sarom_aromas"; // link do perfil da loja
+const INSTAGRAM = "";   // link do perfil da loja (ex.: "https://instagram.com/sarom_aromas"). Vazio = "Instagram em breve"
+
+/* Depoimentos: quando chegarem, coloque aqui. Ex.:
+   {texto:"A vela de Frutas Vermelhas perfumou a sala inteira!", nome:"Ana", produto:"Vela 40 g"} */
+const DEPOIMENTOS = [];
 
 /* Essências (aparecem na seção "Nossas essências") */
 const ESSENCIAS = {
@@ -244,32 +449,69 @@ const ESSENCIAS = {
   "Bambu":              {cor:"#B9C9A3", notas:"Verde, limpo e leve.", em:"Em breve"},
 };
 
-/* Produtos. preco: deixe null para mostrar "Consulte o valor".
+/* Produtos. REGRAS:
+   1) Um card para cada produto + aroma, cada um com a sua foto.
+   2) Aroma, preço e botão ficam sempre alinhados no fim do card (bloco .base),
+      não importa o tamanho do título ou da descrição. Todo card novo segue isso sozinho.
+   Para um aroma novo, copie um card, troque id, nome, foto e aromas.
+   preco: deixe null para mostrar "Consulte o valor".
    foto: caminho da foto real. ilustr: desenho ilustrativo (produto ainda não criado). */
 const PRODUTOS = [
   {id:"sab-maracuja", cat:"Sabonetes", linha:"Sabonete artesanal", nome:"Sabonete Maracujá",
    desc:"Glicerinado com sementes esfoliantes. Embalado e etiquetado, pronto para presentear.",
-   foto:"img/sabonete-maracuja.jpg", aromas:["Maracujá"], preco:null},
+   foto:"img/sabonete-maracuja.jpg", aromas:["Maracujá"], preco:8.99},
   {id:"sab-morango", cat:"Sabonetes", linha:"Sabonete artesanal", nome:"Sabonete Morango",
    desc:"Cremoso, com sementes esfoliantes e aroma doce de morango.",
-   foto:"img/sabonete-morango.jpg", aromas:["Morango"], preco:null},
-  {id:"vela-pote", cat:"Velas", linha:"Velas aromáticas", nome:"Vela aromática no pote de vidro",
-   desc:"Cera vegetal de coco em pote de vidro com tampa dourada.",
-   foto:"img/vela-gengibre-pimenta.jpg", fotos:{"Gengibre e Pimenta":"img/vela-gengibre-pimenta.jpg","Frutas Vermelhas":"img/vela-frutas-vermelhas.jpg"},
-   aromas:["Gengibre e Pimenta","Frutas Vermelhas"], preco:null},
-  {id:"vela-lata", cat:"Velas", linha:"Vela artesanal", nome:"Vela na lata",
-   desc:"Lata de alumínio com tampa, prática para levar e ótima como lembrancinha.",
-   foto:"img/vela-lata-capim-limao.jpg", aromas:["Capim-Limão"], preco:null},
+   foto:"img/sabonete-morango.jpg", aromas:["Morango"], preco:8.99},
+  {id:"vela40-gengibre", cat:"Velas", linha:"Vela 40 g", nome:"Vela Gengibre e Pimenta",
+   desc:"Quente e marcante. Cera vegetal de coco em pote de vidro com tampa dourada.",
+   foto:"img/vela-gengibre-pimenta.jpg", aromas:["Gengibre e Pimenta"], preco:12.99},
+  {id:"vela40-frutas", cat:"Velas", linha:"Vela 40 g", nome:"Vela Frutas Vermelhas",
+   desc:"Doce e vibrante. Cera vegetal de coco em pote de vidro com tampa dourada.",
+   foto:"img/vela-frutas-vermelhas.jpg", aromas:["Frutas Vermelhas"], preco:12.99},
+  {id:"mini-capim", cat:"Velas", linha:"Mini vela 20 g", nome:"Mini vela Capim-Limão",
+   desc:"Fresca e cítrica. Pequena, com tampa, prática para levar e ótima como lembrancinha.",
+   foto:"img/vela-lata-capim-limao.jpg", aromas:["Capim-Limão"], preco:7.99},
   {id:"difusor", cat:"Aromatizadores", linha:"Aromatizador", nome:"Difusor de varetas",
-   desc:"Perfuma o ambiente por semanas, sem chama. Ideal para sala, quarto e lavabo.",
-   ilustr:"difusor", breve:true, aromas:["Lavanda","Bambu","Capim-Limão"], preco:null},
+   desc:"Perfuma o ambiente por semanas, sem chama. Aromas em breve.",
+   ilustr:"difusor", breve:true, aromas:[], preco:null},
   {id:"spray", cat:"Aromatizadores", linha:"Aromatizador", nome:"Home spray",
-   desc:"Para borrifar em ambientes, cortinas e roupas de cama.",
-   ilustr:"spray", breve:true, aromas:["Lavanda","Bambu","Frutas Vermelhas"], preco:null},
-  {id:"kit", cat:"Kits presente", linha:"Kit presente", nome:"Kit Sinta o Momento",
-   desc:"Uma vela e dois sabonetes em caixa presente com laço. Você escolhe os aromas.",
-   ilustr:"kit", breve:true, aromas:["Maracujá","Morango","Gengibre e Pimenta","Frutas Vermelhas","Capim-Limão"], preco:null},
+   desc:"Para borrifar em ambientes, cortinas e roupas de cama. Aromas em breve.",
+   ilustr:"spray", breve:true, aromas:[], preco:null},
+  {id:"kit", cat:"Kits presente", linha:"Kit presente", nome:"Monte seu kit",
+   desc:"Escolha as velas, os sabonetes e as essências que quiser. Pode ir em embalagem para presente.",
+   ilustr:"kit", novo:true, abreKit:true, aromas:[], preco:null},
 ];
+
+/* ===== MONTE SEU KIT =====
+   Cada grupo é uma etapa do kit. Para cada opção:
+   - aromas: essências que o cliente pode escolher (vazio = "aromas em breve")
+   - preco: deixe null enquanto não tiver valor. Quando TODOS os itens escolhidos
+     tiverem preço, o site soma e mostra o total sozinho. */
+const KIT = [
+  {id:"velas", titulo:"Velas", plural:"velas", semTexto:"Não quero vela",
+   dica:"Escolha uma ou mais velas e a essência de cada uma.",
+   opcoes:[
+     {id:"vela40", nome:"Vela no pote de vidro · 40 g", sub:"Cera vegetal de coco, pote de vidro com tampa dourada.",
+      foto:"img/vela-frutas-vermelhas.jpg", aromas:["Gengibre e Pimenta","Frutas Vermelhas","Capim-Limão"], preco:12.99},
+     {id:"mini", nome:"Mini vela · 20 g", sub:"Pequena e prática, ótima para lembrancinha.",
+      foto:"img/vela-lata-capim-limao.jpg", aromas:["Gengibre e Pimenta","Frutas Vermelhas","Capim-Limão"], preco:7.99},
+   ]},
+  {id:"sabonetes", titulo:"Sabonetes", plural:"sabonetes", semTexto:"Não quero sabonete",
+   dica:"Escolha um ou mais sabonetes e a essência de cada um.",
+   opcoes:[
+     {id:"sabonete", nome:"Sabonete artesanal", sub:"Glicerinado, com sementes esfoliantes.",
+      foto:"img/sabonete-morango.jpg", aromas:["Maracujá","Morango"], preco:8.99},
+   ]},
+  {id:"difusor", titulo:"Difusor", plural:"difusores", semTexto:"Não quero difusor",
+   dica:"Perfuma o ambiente por semanas, sem chama.",
+   opcoes:[
+     {id:"difusor", nome:"Difusor de varetas", sub:"", ilustr:"difusor",
+      aromas:[], preco:null},   // <- coloque aqui os aromas do difusor quando estiverem definidos
+   ]},
+];
+const KIT_MINIMO = 2;              // quantidade mínima de itens no kit
+const PRECO_EMBALAGEM = null;      // valor da embalagem para presente (null = a combinar)
 
 /* ===== daqui para baixo é o funcionamento do site ===== */
 const $ = s => document.querySelector(s);
@@ -309,13 +551,21 @@ const ILUSTR = {
 
 let filtro = "Todos";
 let lista = [];
-try { lista = JSON.parse(localStorage.getItem("sarom-lista")) || []; } catch(e) {}
+try { lista = (JSON.parse(localStorage.getItem("sarom-lista")) || []).filter(i=>PRODUTOS.some(p=>p.id===i.id)); } catch(e) {}
 const salvar = () => { try { localStorage.setItem("sarom-lista", JSON.stringify(lista)); } catch(e) {} };
 
 function desenharFiltros(){
-  const cats = ["Todos", ...new Set(PRODUTOS.map(p=>p.cat))];
-  $("#filtros").innerHTML = cats.map(c=>`<button aria-pressed="${c===filtro}" data-c="${c}">${c}</button>`).join("");
-  $("#filtros").querySelectorAll("button").forEach(b=>b.onclick=()=>{filtro=b.dataset.c;desenharFiltros();desenharProdutos();});
+  const cats = ["Todos", ...new Set(PRODUTOS.map(p=>p.cat)), ABA_KIT];
+  $("#filtros").innerHTML = cats.map(c=>`<button aria-pressed="${c===filtro}" data-c="${c}"${c===ABA_KIT?' class="kit-aba"':''}>${c===ABA_KIT?"✦ ":""}${c}</button>`).join("");
+  $("#filtros").querySelectorAll("button").forEach(b=>b.onclick=()=>escolherFiltro(b.dataset.c));
+}
+const ABA_KIT = "Monte seu kit";
+function escolherFiltro(c){
+  filtro = c; desenharFiltros();
+  const kit = c===ABA_KIT;
+  $("#grade").hidden = kit; $("#kit").hidden = !kit;
+  if(!kit) desenharProdutos();
+  if(typeof barraKit==="function") barraKit();
 }
 
 function desenharProdutos(){
@@ -324,40 +574,43 @@ function desenharProdutos(){
     <article class="card" data-id="${p.id}">
       <div class="foto">
         ${p.ilustr ? ILUSTR[p.ilustr] : `<img src="${p.foto}" alt="${p.nome}" loading="lazy">`}
-        ${p.breve ? `<span class="etiqueta breve">Em breve</span>` : `<span class="etiqueta">Foto real</span>`}
+        ${p.breve ? `<span class="etiqueta breve">Em breve</span>` : p.novo ? `<span class="etiqueta novo">Novo</span>` : `<span class="etiqueta">Foto real</span>`}
       </div>
       <div class="info">
         <span class="linha">${p.linha}</span>
         <h3>${p.nome}</h3>
         <p class="desc">${p.desc}</p>
         ${p.ilustr ? `<span class="aviso-ilustr">Imagem ilustrativa</span>` : ""}
-        <span class="rotulo">${p.aromas.length>1?"Escolha o aroma":"Aroma"}</span>
-        <div class="aromas">${p.aromas.map((a,i)=>`<button aria-pressed="${i===0}" data-a="${a}">${a}</button>`).join("")}</div>
-        <span class="preco">${p.preco ? reais(p.preco) : "Consulte o valor"}</span>
+        <div class="base">
+        ${p.aromas.length ? `<span class="rotulo">${p.aromas.length>1?"Escolha o aroma":"Aroma"}</span>
+        <div class="aromas">${p.aromas.map((a,i)=>`<button aria-pressed="${i===0}" data-a="${a}">${a}</button>`).join("")}</div>` : ""}
+        <span class="preco">${p.preco ? reais(p.preco) : p.abreKit ? "Valor conforme os itens" : "Consulte o valor"}</span>
         <div class="acoes">
-          ${p.breve
+          ${p.abreKit ? `<button class="botao" data-abrir-kit>Montar meu kit</button>` : p.breve
             ? `<a class="botao claro" target="_blank" rel="noopener" data-avise>Quero ser avisado</a>`
             : `<button class="botao" data-add>Adicionar à lista</button>`}
+        </div>
         </div>
       </div>
     </article>`).join("");
 
   $("#grade").querySelectorAll(".card").forEach(card=>{
     const p = PRODUTOS.find(x=>x.id===card.dataset.id);
-    const aroma = () => card.querySelector('.aromas [aria-pressed=true]').dataset.a;
+    const aroma = () => { const b = card.querySelector('.aromas [aria-pressed=true]'); return b ? b.dataset.a : ""; };
     card.querySelectorAll(".aromas button").forEach(b=>b.onclick=()=>{
       card.querySelectorAll(".aromas button").forEach(x=>x.setAttribute("aria-pressed", x===b));
       if(p.fotos && p.fotos[b.dataset.a]) card.querySelector(".foto img").src = p.fotos[b.dataset.a];
       atualizarAvise();
     });
     const avise = card.querySelector("[data-avise]");
-    const atualizarAvise = () => { if(avise) avise.href = zapLink(`Olá! Quero ser avisado(a) quando o ${p.nome} (${aroma()}) da SAROM estiver disponível.`); };
+    const atualizarAvise = () => { if(avise) avise.href = zapLink(`Olá! Quero ser avisado(a) quando o ${p.nome}${p.aromas.length?` (${aroma()})`:""} da SAROM estiver disponível.`); };
     atualizarAvise();
     const add = card.querySelector("[data-add]");
     if(add) add.onclick = () => {
       const a = aroma(); const it = lista.find(x=>x.id===p.id && x.aroma===a);
-      it ? it.qtd++ : lista.push({id:p.id,nome:p.nome,aroma:a,qtd:1});
-      salvar(); atualizarLista(); aviso(`${p.nome} (${a}) adicionado`);
+      const g = p.linha.match(/\d+ g/); const nome = p.nome + (g ? " · " + g[0] : "");
+      it ? it.qtd++ : lista.push({id:p.id,nome,aroma:a,qtd:1});
+      salvar(); atualizarLista(); aviso(`${nome} adicionado`);
     };
   });
 }
@@ -368,15 +621,18 @@ function desenharEssencias(){
 }
 
 function mensagem(){
-  const linhas = lista.map(i=>`• ${i.qtd}x ${i.nome} (${i.aroma})`).join("\n");
-  return `Olá! Vi o catálogo da SAROM e gostaria de fazer um pedido:\n\n${linhas}\n\nPode me passar valores e prazo?`;
+  const preco = i => (PRODUTOS.find(p=>p.id===i.id)||{}).preco;
+  const linhas = lista.map(i=>`• ${i.qtd}x ${i.nome}${i.nome.includes(i.aroma)?"":` (${i.aroma})`}${preco(i)?` – ${reais(preco(i)*i.qtd)}`:""}`).join("\n");
+  const tudo = lista.every(i=>preco(i));
+  const soma = lista.reduce((s,i)=>s+(preco(i)||0)*i.qtd,0);
+  return `Olá! Vi o catálogo da SAROM e gostaria de fazer um pedido:\n\n${linhas}${tudo?`\n\nTotal dos produtos: ${reais(soma)}`:""}\n\nPode me passar o frete para o meu CEP e o prazo?`;
 }
 function atualizarLista(){
   const total = lista.reduce((s,i)=>s+i.qtd,0);
   $("#lista-btn").hidden = total===0;
   $("#lista-qtd").textContent = total;
   $("#itens").innerHTML = lista.length ? lista.map((i,k)=>`
-    <div class="item"><span>${i.nome}<br><small style="color:var(--suave)">${i.aroma}</small></span>
+    <div class="item"><span>${i.nome}${i.nome.includes(i.aroma)?"":`<br><small style="color:var(--suave)">${i.aroma}</small>`}</span>
     <span class="qtd"><button data-k="${k}" data-d="-1" aria-label="Diminuir">−</button>${i.qtd}<button data-k="${k}" data-d="1" aria-label="Aumentar">+</button></span></div>`).join("")
     : `<p style="color:var(--suave)">Sua lista está vazia.</p>`;
   $("#itens").querySelectorAll("button").forEach(b=>b.onclick=()=>{
@@ -385,15 +641,126 @@ function atualizarLista(){
     salvar(); atualizarLista();
   });
   $("#enviar").href = zapLink(mensagem());
+  const pr = i => (PRODUTOS.find(p=>p.id===i.id)||{}).preco;
+  $("#lista-total").textContent = lista.length && lista.every(pr) ? "Total: " + reais(lista.reduce((s,i)=>s+pr(i)*i.qtd,0)) + " + frete conforme o CEP" : "";
 }
+/* ----- Monte seu kit ----- */
+let kit = {qtd:{}, sem:{}, presente:false, cartaoOn:false, cartao:""};
+try { kit = Object.assign(kit, JSON.parse(localStorage.getItem("sarom-kit")) || {}); } catch(e) {}
+const salvarKit = () => { try { localStorage.setItem("sarom-kit", JSON.stringify(kit)); } catch(e) {} };
+const chave = (g,o,a) => g+"|"+o+"|"+a;
+const disponivel = g => g.opcoes.some(o=>o.aromas.length);
+const corDe = a => (ESSENCIAS[a]||{}).cor || "#ddd";
+
+function itensKit(){
+  const out = [];
+  KIT.forEach(g=>{ if(kit.sem[g.id]) return;
+    g.opcoes.forEach(o=>o.aromas.forEach(a=>{ const n = kit.qtd[chave(g.id,o.id,a)]||0; if(n>0) out.push({g,o,a,n}); })); });
+  return out;
+}
+
+function desenharKit(){
+  $("#kit-etapas").innerHTML = KIT.map((g,gi)=>`
+    <div class="etapa${kit.sem[g.id]?" desligada":""}" data-g="${g.id}">
+      <div class="etapa-topo"><span class="etapa-num">${gi+1}</span><div><h3>${g.titulo}</h3><p>${g.dica}</p></div></div>
+      ${disponivel(g) ? `<label class="nao-quero"><input type="checkbox" data-sem="${g.id}" ${kit.sem[g.id]?"checked":""}> ${g.semTexto}</label>` : ""}
+      ${g.opcoes.map(o=>`
+        <div class="opcao">
+          ${o.ilustr ? `<div class="mini">${ILUSTR[o.ilustr]}</div>` : `<img class="mini" src="${o.foto}" alt="" loading="lazy">`}
+          <div class="corpo">
+            <h4>${o.nome}</h4>
+            <div class="sub">${o.sub}${o.preco?` · ${reais(o.preco)} cada`:""}</div>
+            ${o.aromas.length ? o.aromas.map(a=>{ const n = kit.qtd[chave(g.id,o.id,a)]||0; return `
+              <div class="ess-linha${n?" tem":""}"><span><i style="background:${corDe(a)}"></i>${a}</span>
+                <span class="passo-qtd"><button data-k="${chave(g.id,o.id,a)}" data-d="-1" aria-label="Tirar ${o.nome} ${a}" ${n?"":"disabled"}>−</button><b>${n}</b><button data-k="${chave(g.id,o.id,a)}" data-d="1" aria-label="Adicionar ${o.nome} ${a}">+</button></span></div>`; }).join("")
+            : `<div class="breve-box"><b>Aromas em breve.</b> Estamos escolhendo as essências do difusor. Logo ele entra no kit.</div>`}
+          </div>
+        </div>`).join("")}
+    </div>`).join("");
+  $("#kit-etapas").querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.k; kit.qtd[k] = Math.max(0,(kit.qtd[k]||0) + +b.dataset.d);
+    if(!kit.qtd[k]) delete kit.qtd[k];
+    salvarKit(); desenharKit();
+  });
+  $("#kit-etapas").querySelectorAll("[data-sem]").forEach(c=>c.onchange=()=>{
+    const g=c.dataset.sem; kit.sem[g]=c.checked;
+    if(c.checked) Object.keys(kit.qtd).forEach(k=>{ if(k.startsWith(g+"|")) delete kit.qtd[k]; });
+    salvarKit(); desenharKit();
+  });
+  resumoKit();
+}
+
+function resumoKit(){
+  const itens = itensKit();
+  const total = itens.reduce((s,i)=>s+i.n,0);
+  let html = "";
+  KIT.forEach(g=>{
+    if(!disponivel(g)) return;
+    if(kit.sem[g.id]) { html += `<li class="sem">${g.semTexto}</li>`; return; }
+    itens.filter(i=>i.g===g).forEach(i=>{ html += `<li><span>${i.n}x ${i.o.nome}<br><small style="color:var(--suave)">${i.a}</small></span><span>${i.o.preco?reais(i.o.preco*i.n):""}</span></li>`; });
+  });
+  $("#kit-resumo").innerHTML = html ? `<ul>${html}</ul>` : `<p class="vazio">Toque no + para colocar itens no seu kit.</p>`;
+  $("#kit-presente").checked = kit.presente;
+  $("#kit-cartao-on").checked = kit.cartaoOn;
+  $("#kit-cartao").hidden = !kit.cartaoOn;
+  if($("#kit-cartao").value !== kit.cartao) $("#kit-cartao").value = kit.cartao;
+  // total: só aparece quando todos os itens escolhidos têm preço
+  const temPreco = itens.length && itens.every(i=>i.o.preco);
+  const soma = itens.reduce((s,i)=>s+(i.o.preco||0)*i.n,0) + (kit.presente&&PRECO_EMBALAGEM?PRECO_EMBALAGEM:0);
+  $("#kit-total").textContent = temPreco ? reais(soma) : "Consulte o valor";
+  $("#kit-obs").textContent = temPreco ? ("Frete conforme o CEP" + (kit.presente&&PRECO_EMBALAGEM==null ? " · embalagem a combinar" : "") + ".") : "";
+  const ok = total >= KIT_MINIMO;
+  $("#kit-regra").className = "regra" + (ok?" ok":"");
+  $("#kit-regra").textContent = ok ? `✓ ${total} itens no kit` : `O kit precisa de pelo menos ${KIT_MINIMO} itens (agora: ${total}).`;
+  $("#kit-enviar").setAttribute("aria-disabled", !ok);
+  $("#kit-barra-qtd").textContent = total; barraKit();
+  $("#kit-enviar").href = ok ? zapLink(mensagemKit(itens, temPreco?soma:null)) : "#";
+}
+
+function mensagemKit(itens, soma){
+  let m = "*Pedido SAROM – Monte seu kit*\n";
+  KIT.forEach(g=>{
+    if(!disponivel(g)) return;
+    m += `\n*${g.titulo}*\n`;
+    const meus = itens.filter(i=>i.g===g);
+    m += meus.length ? meus.map(i=>`• ${i.n}x ${i.o.nome.replace(" · "," ")} – ${i.a}${i.o.preco?` (${reais(i.o.preco*i.n)})`:""}`).join("\n") + "\n" : `• ${g.semTexto}\n`;
+  });
+  m += `\nEmbalagem para presente: ${kit.presente?"sim":"não"}`;
+  if(kit.cartaoOn) m += `\nCartão com mensagem: ${kit.cartao.trim() ? "“"+kit.cartao.trim()+"”" : "sim (mensagem a combinar)"}`;
+  if(soma!=null) m += `\n\nTotal dos produtos: ${reais(soma)}` + (kit.presente&&PRECO_EMBALAGEM==null?" (+ embalagem a combinar)":"");
+  return m + `\n\nPode me passar o frete para o meu CEP e o prazo?`;
+}
+
+let resumoVisivel = false;
+function barraKit(){ const n = itensKit().reduce((s,i)=>s+i.n,0);
+  $("#kit-barra").classList.toggle("on", filtro===ABA_KIT && n>0 && !resumoVisivel); }
+try { new IntersectionObserver(es=>{ resumoVisivel = es[0].isIntersecting; barraKit(); }).observe($(".resumo")); } catch(e) {}
+$("#kit-barra").onclick = () => $(".resumo").scrollIntoView({behavior:"smooth", block:"center"});
+$("#kit-presente").onchange = e => { kit.presente = e.target.checked; salvarKit(); resumoKit(); };
+$("#kit-cartao-on").onchange = e => { kit.cartaoOn = e.target.checked; salvarKit(); resumoKit(); if(kit.cartaoOn) $("#kit-cartao").focus(); };
+$("#kit-cartao").oninput = e => { kit.cartao = e.target.value; salvarKit(); resumoKit(); };
+$("#kit-limpar").onclick = () => { kit = {qtd:{}, sem:{}, presente:false, cartaoOn:false, cartao:""}; salvarKit(); desenharKit(); };
+document.addEventListener("click", e => {
+  if(!e.target.closest("[data-abrir-kit]")) return;
+  e.preventDefault(); escolherFiltro(ABA_KIT);
+  $("#produtos").scrollIntoView({behavior:"smooth"});
+});
+const abrirPeloLink = () => { if(location.hash==="#monte-seu-kit") setTimeout(()=>{ escolherFiltro(ABA_KIT); $("#produtos").scrollIntoView(); }, 0); };
+abrirPeloLink(); window.addEventListener("hashchange", abrirPeloLink);
+
 let t; function aviso(txt){ const el=$("#toast"); el.textContent=txt; el.classList.add("on"); clearTimeout(t); t=setTimeout(()=>el.classList.remove("on"),1800); }
 
 $("#lista-btn").onclick = () => $("#dlg").showModal();
 $("#fechar").onclick = () => $("#dlg").close();
 $("#zap-geral").href = $("#zap-rodape").href = zapLink("Olá! Vi o catálogo da SAROM e gostaria de mais informações.");
-$("#insta").href = INSTAGRAM;
+if(INSTAGRAM) $("#insta").outerHTML = `<a id="insta" href="${INSTAGRAM}" target="_blank" rel="noopener">Instagram</a>`;
+$("#zap-natal").href = zapLink("Olá! Quero reservar a mini vela de Natal da SAROM. Quantidade: ");
+$("#depos").innerHTML = DEPOIMENTOS.length
+  ? DEPOIMENTOS.map(d=>`<div class="depo"><p>${d.texto}</p><small>${d.nome}${d.produto?" · "+d.produto:""}</small></div>`).join("")
+  : [0,1,2].map(i=>`<div class="depo vazio${i?" extra":""}"><div class="estrelas">★★★★★</div>Em breve, o depoimento de quem já experimentou.</div>`).join("");
+$("#duvida-btn").href = zapLink("Olá! Gostei dos produtos da SAROM, mas fiquei com uma dúvida:");
 
-desenharFiltros(); desenharProdutos(); desenharEssencias(); atualizarLista();
+desenharFiltros(); desenharProdutos(); desenharEssencias(); atualizarLista(); desenharKit();
 </script>
 </body>
 </html>
