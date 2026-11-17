@@ -447,7 +447,9 @@ const ESSENCIAS = {
   "Bambu":              {cor:"#B9C9A3", notas:"Verde, limpo e leve.", em:"Em breve"},
 };
 
-/* Produtos. preco: deixe null para mostrar "Consulte o valor".
+/* Produtos. REGRA: um card para cada produto + aroma, cada um com a sua foto.
+   Para um aroma novo, copie um card, troque id, nome, foto e aromas.
+   preco: deixe null para mostrar "Consulte o valor".
    foto: caminho da foto real. ilustr: desenho ilustrativo (produto ainda não criado). */
 const PRODUTOS = [
   {id:"sab-maracuja", cat:"Sabonetes", linha:"Sabonete artesanal", nome:"Sabonete Maracujá",
@@ -456,19 +458,21 @@ const PRODUTOS = [
   {id:"sab-morango", cat:"Sabonetes", linha:"Sabonete artesanal", nome:"Sabonete Morango",
    desc:"Cremoso, com sementes esfoliantes e aroma doce de morango.",
    foto:"img/sabonete-morango.jpg", aromas:["Morango"], preco:8.99},
-  {id:"vela-pote", cat:"Velas", linha:"Velas aromáticas", nome:"Vela no pote de vidro · 40 g",
-   desc:"Cera vegetal de coco em pote de vidro com tampa dourada.",
-   foto:"img/vela-gengibre-pimenta.jpg", fotos:{"Gengibre e Pimenta":"img/vela-gengibre-pimenta.jpg","Frutas Vermelhas":"img/vela-frutas-vermelhas.jpg"},
-   aromas:["Gengibre e Pimenta","Frutas Vermelhas"], preco:12.99},
-  {id:"vela-lata", cat:"Velas", linha:"Vela artesanal", nome:"Mini vela · 20 g",
-   desc:"Pequena, com tampa, prática para levar e ótima como lembrancinha.",
+  {id:"vela40-gengibre", cat:"Velas", linha:"Vela 40 g", nome:"Vela Gengibre e Pimenta",
+   desc:"Quente e marcante. Cera vegetal de coco em pote de vidro com tampa dourada.",
+   foto:"img/vela-gengibre-pimenta.jpg", aromas:["Gengibre e Pimenta"], preco:12.99},
+  {id:"vela40-frutas", cat:"Velas", linha:"Vela 40 g", nome:"Vela Frutas Vermelhas",
+   desc:"Doce e vibrante. Cera vegetal de coco em pote de vidro com tampa dourada.",
+   foto:"img/vela-frutas-vermelhas.jpg", aromas:["Frutas Vermelhas"], preco:12.99},
+  {id:"mini-capim", cat:"Velas", linha:"Mini vela 20 g", nome:"Mini vela Capim-Limão",
+   desc:"Fresca e cítrica. Pequena, com tampa, prática para levar e ótima como lembrancinha.",
    foto:"img/vela-lata-capim-limao.jpg", aromas:["Capim-Limão"], preco:7.99},
   {id:"difusor", cat:"Aromatizadores", linha:"Aromatizador", nome:"Difusor de varetas",
-   desc:"Perfuma o ambiente por semanas, sem chama. Ideal para sala, quarto e lavabo.",
-   ilustr:"difusor", breve:true, aromas:["Lavanda","Bambu","Capim-Limão"], preco:null},
+   desc:"Perfuma o ambiente por semanas, sem chama. Aromas em breve.",
+   ilustr:"difusor", breve:true, aromas:[], preco:null},
   {id:"spray", cat:"Aromatizadores", linha:"Aromatizador", nome:"Home spray",
-   desc:"Para borrifar em ambientes, cortinas e roupas de cama.",
-   ilustr:"spray", breve:true, aromas:["Lavanda","Bambu","Frutas Vermelhas"], preco:null},
+   desc:"Para borrifar em ambientes, cortinas e roupas de cama. Aromas em breve.",
+   ilustr:"spray", breve:true, aromas:[], preco:null},
   {id:"kit", cat:"Kits presente", linha:"Kit presente", nome:"Monte seu kit",
    desc:"Escolha as velas, os sabonetes e as essências que quiser. Pode ir em embalagem para presente.",
    ilustr:"kit", novo:true, abreKit:true, aromas:[], preco:null},
@@ -542,7 +546,7 @@ const ILUSTR = {
 
 let filtro = "Todos";
 let lista = [];
-try { lista = JSON.parse(localStorage.getItem("sarom-lista")) || []; } catch(e) {}
+try { lista = (JSON.parse(localStorage.getItem("sarom-lista")) || []).filter(i=>PRODUTOS.some(p=>p.id===i.id)); } catch(e) {}
 const salvar = () => { try { localStorage.setItem("sarom-lista", JSON.stringify(lista)); } catch(e) {} };
 
 function desenharFiltros(){
@@ -585,20 +589,21 @@ function desenharProdutos(){
 
   $("#grade").querySelectorAll(".card").forEach(card=>{
     const p = PRODUTOS.find(x=>x.id===card.dataset.id);
-    const aroma = () => card.querySelector('.aromas [aria-pressed=true]').dataset.a;
+    const aroma = () => { const b = card.querySelector('.aromas [aria-pressed=true]'); return b ? b.dataset.a : ""; };
     card.querySelectorAll(".aromas button").forEach(b=>b.onclick=()=>{
       card.querySelectorAll(".aromas button").forEach(x=>x.setAttribute("aria-pressed", x===b));
       if(p.fotos && p.fotos[b.dataset.a]) card.querySelector(".foto img").src = p.fotos[b.dataset.a];
       atualizarAvise();
     });
     const avise = card.querySelector("[data-avise]");
-    const atualizarAvise = () => { if(avise) avise.href = zapLink(`Olá! Quero ser avisado(a) quando o ${p.nome} (${aroma()}) da SAROM estiver disponível.`); };
+    const atualizarAvise = () => { if(avise) avise.href = zapLink(`Olá! Quero ser avisado(a) quando o ${p.nome}${p.aromas.length?` (${aroma()})`:""} da SAROM estiver disponível.`); };
     atualizarAvise();
     const add = card.querySelector("[data-add]");
     if(add) add.onclick = () => {
       const a = aroma(); const it = lista.find(x=>x.id===p.id && x.aroma===a);
-      it ? it.qtd++ : lista.push({id:p.id,nome:p.nome,aroma:a,qtd:1});
-      salvar(); atualizarLista(); aviso(`${p.nome} (${a}) adicionado`);
+      const g = p.linha.match(/\d+ g/); const nome = p.nome + (g ? " · " + g[0] : "");
+      it ? it.qtd++ : lista.push({id:p.id,nome,aroma:a,qtd:1});
+      salvar(); atualizarLista(); aviso(`${nome} adicionado`);
     };
   });
 }
@@ -610,7 +615,7 @@ function desenharEssencias(){
 
 function mensagem(){
   const preco = i => (PRODUTOS.find(p=>p.id===i.id)||{}).preco;
-  const linhas = lista.map(i=>`• ${i.qtd}x ${i.nome} (${i.aroma})${preco(i)?` – ${reais(preco(i)*i.qtd)}`:""}`).join("\n");
+  const linhas = lista.map(i=>`• ${i.qtd}x ${i.nome}${i.nome.includes(i.aroma)?"":` (${i.aroma})`}${preco(i)?` – ${reais(preco(i)*i.qtd)}`:""}`).join("\n");
   const tudo = lista.every(i=>preco(i));
   const soma = lista.reduce((s,i)=>s+(preco(i)||0)*i.qtd,0);
   return `Olá! Vi o catálogo da SAROM e gostaria de fazer um pedido:\n\n${linhas}${tudo?`\n\nTotal dos produtos: ${reais(soma)}`:""}\n\nPode me passar o frete para o meu CEP e o prazo?`;
@@ -620,7 +625,7 @@ function atualizarLista(){
   $("#lista-btn").hidden = total===0;
   $("#lista-qtd").textContent = total;
   $("#itens").innerHTML = lista.length ? lista.map((i,k)=>`
-    <div class="item"><span>${i.nome}<br><small style="color:var(--suave)">${i.aroma}</small></span>
+    <div class="item"><span>${i.nome}${i.nome.includes(i.aroma)?"":`<br><small style="color:var(--suave)">${i.aroma}</small>`}</span>
     <span class="qtd"><button data-k="${k}" data-d="-1" aria-label="Diminuir">−</button>${i.qtd}<button data-k="${k}" data-d="1" aria-label="Aumentar">+</button></span></div>`).join("")
     : `<p style="color:var(--suave)">Sua lista está vazia.</p>`;
   $("#itens").querySelectorAll("button").forEach(b=>b.onclick=()=>{
