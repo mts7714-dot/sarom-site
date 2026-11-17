@@ -81,7 +81,8 @@
   .aromas{display:flex;flex-wrap:wrap;gap:6px}
   .aromas button{border:1px solid var(--linha);background:var(--creme);color:var(--texto);border-radius:999px;padding:5px 12px;font:13.5px Jost,sans-serif;cursor:pointer}
   .aromas button[aria-pressed=true]{border-color:var(--dourado);background:#F6E9D3;color:var(--marrom)}
-  .card .acoes{margin-top:auto;padding-top:8px;display:flex;gap:8px}
+  .card .base{margin-top:auto;display:flex;flex-direction:column;gap:8px;padding-top:4px}
+  .card .acoes{padding-top:8px;display:flex;gap:8px}
   .card .acoes .botao{flex:1;justify-content:center;padding:11px 14px;font-size:14px}
   .aviso-ilustr{font-size:12px;color:var(--suave);font-style:italic}
 
@@ -576,13 +577,15 @@ function desenharProdutos(){
         <h3>${p.nome}</h3>
         <p class="desc">${p.desc}</p>
         ${p.ilustr ? `<span class="aviso-ilustr">Imagem ilustrativa</span>` : ""}
+        <div class="base">
         ${p.aromas.length ? `<span class="rotulo">${p.aromas.length>1?"Escolha o aroma":"Aroma"}</span>
         <div class="aromas">${p.aromas.map((a,i)=>`<button aria-pressed="${i===0}" data-a="${a}">${a}</button>`).join("")}</div>` : ""}
-        <span class="preco">${p.preco ? reais(p.preco) : p.abreKit ? "O valor depende dos itens que você escolher" : "Consulte o valor"}</span>
+        <span class="preco">${p.preco ? reais(p.preco) : p.abreKit ? "Valor conforme os itens" : "Consulte o valor"}</span>
         <div class="acoes">
           ${p.abreKit ? `<button class="botao" data-abrir-kit>Montar meu kit</button>` : p.breve
             ? `<a class="botao claro" target="_blank" rel="noopener" data-avise>Quero ser avisado</a>`
             : `<button class="botao" data-add>Adicionar à lista</button>`}
+        </div>
         </div>
       </div>
     </article>`).join("");
