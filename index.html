@@ -225,6 +225,25 @@
   .depo.vazio:before{display:none}
   .depo.vazio .estrelas{color:var(--dourado);letter-spacing:4px;margin-bottom:8px;opacity:.6}
   @media (max-width:760px){ .depos{grid-template-columns:1fr} .depo.vazio.extra{display:none} }
+  .mural-topo{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;margin-bottom:22px}
+  .mural-topo select{border:1px solid var(--linha);background:var(--branco);color:var(--marrom2);border-radius:999px;padding:11px 16px;font:14.5px Jost,sans-serif}
+  .depo .prod{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--salvia);margin-top:14px}
+  .depo .midias{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px;margin:4px 0 10px}
+  .depo .midias img,.depo .midias video{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px;background:var(--creme2)}
+  .depo .coment{border-top:1px dashed var(--linha);margin-top:12px;padding-top:8px;font-size:14px}
+  .depo .coment p{margin:4px 0}
+  .depo .coment form{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+  .depo .coment input{flex:1;min-width:90px;border:1px solid var(--linha);border-radius:999px;padding:7px 12px;font:13.5px Jost,sans-serif;background:var(--creme)}
+  .depo .coment button{border:0;background:var(--marrom2);color:#FFF4CC;border-radius:999px;padding:7px 14px;font:13.5px Jost,sans-serif;cursor:pointer}
+  .mural-form label{display:block;font-size:14px;color:var(--marrom);margin-bottom:12px}
+  .mural-form input:not([type=checkbox]),.mural-form select,.mural-form textarea{display:block;width:100%;margin-top:5px;border:1px solid var(--linha);border-radius:10px;padding:10px 12px;font:15px Jost,sans-serif;background:var(--creme);color:var(--texto)}
+  .mural-form label.check{display:flex;gap:8px;align-items:flex-start;color:var(--suave);font-size:13.5px}
+  .mural-form label.check input{margin-top:3px;accent-color:var(--marrom)}
+  .mural-aviso{font-size:13px;color:var(--suave);margin:0}
+  .mural-status{font-size:14px;color:var(--marrom);min-height:1em;margin:8px 0 0}
+  .mural-prev{display:flex;gap:6px;flex-wrap:wrap;margin:-4px 0 12px}
+  .mural-prev img,.mural-prev video{width:64px;height:64px;object-fit:cover;border-radius:8px}
+  #dlg-mural{max-height:92vh;overflow:auto}
 
   /* perguntas */
   .faq{max-width:780px;margin:0 auto}
@@ -336,7 +355,11 @@
 
   <section id="depoimentos" style="background:var(--creme2)">
     <div class="wrap">
-      <div class="titulo"><h2>Quem já sentiu o momento</h2><p>As primeiras amostras estão saindo agora. Em breve, as opiniões de quem experimentou aparecem aqui.</p><div class="enfeite" style="--creme:var(--creme2)"></div></div>
+      <div class="titulo"><h2>Quem já sentiu o momento</h2><p>Experimentou algum produto SAROM? Conte pra gente como foi, com fotos e vídeos.</p><div class="enfeite" style="--creme:var(--creme2)"></div></div>
+      <div class="mural-topo">
+        <select id="mural-filtro" aria-label="Filtrar por produto"><option value="">Todos os produtos</option></select>
+        <button class="botao ouro" id="mural-abrir" type="button">✎ Contar minha experiência</button>
+      </div>
       <div class="depos" id="depos"></div>
     </div>
   </section>
@@ -411,6 +434,24 @@
 </a>
 <button class="botao zap lista-btn" id="lista-btn" hidden>Minha lista <b id="lista-qtd">0</b></button>
 
+<dialog id="dlg-mural">
+  <form class="dlg mural-form" id="mural-form">
+    <h3>Contar minha experiência</h3>
+    <label>Seu nome<input name="nome" required maxlength="60" placeholder="Como quer aparecer no site"></label>
+    <label>Produto<select name="produto" id="mural-produto" required></select></label>
+    <label>Seu comentário<textarea name="texto" required maxlength="800" rows="4" placeholder="O que achou do aroma, da embalagem, da experiência..."></textarea></label>
+    <label>Fotos ou vídeos <small>(até 4 arquivos, vídeos de até 50 MB)</small><input name="midia" id="mural-midia" type="file" accept="image/*,video/*" multiple></label>
+    <div class="mural-prev" id="mural-prev"></div>
+    <label class="check"><input type="checkbox" required> Autorizo a SAROM a mostrar meu nome, comentário, fotos e vídeos no site.</label>
+    <p class="mural-aviso">Seu post aparece no site depois de uma rápida revisão da nossa equipe.</p>
+    <p class="mural-status" id="mural-status" aria-live="polite"></p>
+    <div class="rodape">
+      <button class="botao claro" type="button" id="mural-fechar">Cancelar</button>
+      <button class="botao ouro" type="submit" id="mural-enviar">Enviar</button>
+    </div>
+  </form>
+</dialog>
+
 <dialog id="dlg">
   <div class="dlg">
     <h3>Minha lista</h3>
@@ -431,9 +472,9 @@
 const WHATSAPP = "5511957756980";         // DDI 55 + DDD + número, só números
 const INSTAGRAM = "";   // link do perfil da loja (ex.: "https://instagram.com/sarom_aromas"). Vazio = "Instagram em breve"
 
-/* Depoimentos: quando chegarem, coloque aqui. Ex.:
-   {texto:"A vela de Frutas Vermelhas perfumou a sala inteira!", nome:"Ana", produto:"Vela 40 g"} */
-const DEPOIMENTOS = [];
+/* Mural de depoimentos (clientes postam com nome, produto, fotos e vídeos).
+   Fica guardado no Supabase. Vazio = modo de teste (o formulário aparece, mas não envia). */
+const MURAL = { url: "", chave: "" };   // endereço do projeto Supabase e chave pública (anon)
 
 /* Essências (aparecem na seção "Nossas essências") */
 const ESSENCIAS = {
@@ -467,7 +508,7 @@ const PRODUTOS = [
    foto:"img/sabonete-masculino.jpg", pos:"50% 60%", aromas:["Masculino"], preco:9.99},
   {id:"sab-massageador", cat:"Sabonetes", linha:"Sabonete massageador", nome:"Sabonete Massageador",
    desc:"Formato com bolinhas que massageiam a pele durante o banho.",
-   foto:"img/sabonete-massageador.jpg", pos:"50% 45%", aromas:["Flor de Cerejeira"], preco:null},
+   foto:"img/sabonete-massageador.jpg", pos:"50% 45%", aromas:["Flor de Cerejeira"], preco:12.00},
   {id:"vela40-gengibre", cat:"Velas", linha:"Vela 40 g", nome:"Vela Gengibre e Pimenta",
    desc:"Quente e marcante. Cera vegetal de coco em pote de vidro com tampa dourada.",
    foto:"img/vela-gengibre-pimenta.jpg", aromas:["Gengibre e Pimenta"], preco:14.99},
@@ -766,9 +807,85 @@ $("#fechar").onclick = () => $("#dlg").close();
 $("#zap-geral").href = $("#zap-rodape").href = zapLink("Olá! Vi o catálogo da SAROM e gostaria de mais informações.");
 if(INSTAGRAM) $("#insta").outerHTML = `<a id="insta" href="${INSTAGRAM}" target="_blank" rel="noopener">Instagram</a>`;
 $("#zap-natal").href = zapLink("Olá! Quero reservar a mini vela de Natal da SAROM. Quantidade: ");
-$("#depos").innerHTML = DEPOIMENTOS.length
-  ? DEPOIMENTOS.map(d=>`<div class="depo"><p>${d.texto}</p><small>${d.nome}${d.produto?" · "+d.produto:""}</small></div>`).join("")
-  : [0,1,2].map(i=>`<div class="depo vazio${i?" extra":""}"><div class="estrelas">★★★★★</div>Em breve, o depoimento de quem já experimentou.</div>`).join("");
+/* ----- Mural de depoimentos ----- */
+const esc = t => String(t??"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const nomesProdutos = PRODUTOS.filter(p=>!p.abreKit).map(p=>p.nome);
+const muralAtivo = () => MURAL.url && MURAL.chave;
+const api = (caminho, op={}) => fetch(MURAL.url + caminho, {...op, headers:{apikey:MURAL.chave, Authorization:"Bearer "+MURAL.chave, ...(op.headers||{})}});
+const midiaUrl = c => MURAL.url + "/storage/v1/object/public/mural/" + c;
+let posts = [];
+
+$("#mural-filtro").innerHTML += nomesProdutos.map(n=>`<option>${esc(n)}</option>`).join("");
+$("#mural-produto").innerHTML = `<option value="">Escolha o produto</option>` + nomesProdutos.map(n=>`<option>${esc(n)}</option>`).join("") + `<option>Monte seu kit</option>`;
+
+function desenharMural(){
+  const f = $("#mural-filtro").value;
+  const lista = posts.filter(p=>!f || p.produto===f);
+  $("#depos").innerHTML = lista.length ? lista.map(p=>`
+    <div class="depo">
+      <span class="prod">${esc(p.produto)}</span>
+      <p>${esc(p.texto)}</p>
+      ${(p.midias||[]).length ? `<div class="midias">${p.midias.map(m=>/\.(mp4|mov|webm|m4v)$/i.test(m)
+        ? `<video src="${esc(midiaUrl(m))}" controls preload="metadata"></video>`
+        : `<a href="${esc(midiaUrl(m))}" target="_blank" rel="noopener"><img src="${esc(midiaUrl(m))}" alt="Foto enviada por ${esc(p.nome)}" loading="lazy"></a>`).join("")}</div>` : ""}
+      <small>${esc(p.nome)} · ${new Date(p.criado_em).toLocaleDateString("pt-BR")}</small>
+      <div class="coment">
+        ${(p.comentarios||[]).filter(c=>c.aprovado).map(c=>`<p><b>${esc(c.nome)}:</b> ${esc(c.texto)}</p>`).join("")}
+        <form data-post="${esc(p.id)}"><input name="nome" placeholder="Seu nome" maxlength="60" required><input name="texto" placeholder="Comentar..." maxlength="300" required><button>Enviar</button></form>
+      </div>
+    </div>`).join("")
+  : [0,1,2].map(i=>`<div class="depo vazio${i?" extra":""}"><div class="estrelas">★★★★★</div>${f ? "Ainda não tem depoimento deste produto. Seja o primeiro!" : "Seja o primeiro a contar como foi a sua experiência."}</div>`).join("");
+  $("#depos").querySelectorAll("form[data-post]").forEach(fm=>fm.onsubmit=async e=>{
+    e.preventDefault();
+    const d = Object.fromEntries(new FormData(fm));
+    if(!muralAtivo()) return aviso("Prévia: comentários ainda não estão ligados");
+    const r = await api("/rest/v1/comentarios",{method:"POST",headers:{"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify({post_id:fm.dataset.post,nome:d.nome,texto:d.texto})});
+    fm.reset(); aviso(r.ok ? "Comentário enviado! Ele aparece depois da revisão." : "Não deu para enviar agora. Tente de novo.");
+  });
+}
+async function carregarMural(){
+  if(muralAtivo()){
+    try{
+      const r = await api("/rest/v1/posts?select=id,nome,produto,texto,midias,criado_em,comentarios(nome,texto,aprovado)&aprovado=eq.true&order=criado_em.desc&limit=60");
+      if(r.ok) posts = await r.json();
+    }catch(e){}
+  }
+  desenharMural();
+}
+$("#mural-filtro").onchange = desenharMural;
+$("#mural-abrir").onclick = () => { $("#mural-status").textContent=""; $("#dlg-mural").showModal(); };
+$("#mural-fechar").onclick = () => $("#dlg-mural").close();
+$("#mural-midia").onchange = e => {
+  const fs = [...e.target.files];
+  if(fs.length>4){ $("#mural-status").textContent="Escolha no máximo 4 arquivos."; e.target.value=""; $("#mural-prev").innerHTML=""; return; }
+  const grande = fs.find(f=>f.size>50*1024*1024);
+  if(grande){ $("#mural-status").textContent=`O arquivo ${grande.name} passou de 50 MB.`; e.target.value=""; $("#mural-prev").innerHTML=""; return; }
+  $("#mural-status").textContent="";
+  $("#mural-prev").innerHTML = fs.map(f=>{ const u=URL.createObjectURL(f); return f.type.startsWith("video") ? `<video src="${u}" muted></video>` : `<img src="${u}" alt="">`; }).join("");
+};
+$("#mural-form").onsubmit = async e => {
+  e.preventDefault();
+  const fm = e.target, d = new FormData(fm), st = $("#mural-status");
+  if(!muralAtivo()){ st.textContent = "Prévia: o envio ainda não está ligado. Depois de aprovado, os posts vão para revisão e aparecem aqui."; return; }
+  $("#mural-enviar").disabled = true; st.textContent = "Enviando...";
+  try{
+    const midias = [];
+    for(const f of [...$("#mural-midia").files].slice(0,4)){
+      const ext = (f.name.split(".").pop()||"bin").toLowerCase().replace(/[^a-z0-9]/g,"");
+      const caminho = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+      const up = await api("/storage/v1/object/mural/"+caminho,{method:"POST",headers:{"Content-Type":f.type||"application/octet-stream"},body:f});
+      if(!up.ok) throw new Error("upload");
+      midias.push(caminho);
+    }
+    const r = await api("/rest/v1/posts",{method:"POST",headers:{"Content-Type":"application/json",Prefer:"return=minimal"},
+      body:JSON.stringify({nome:d.get("nome"),produto:d.get("produto"),texto:d.get("texto"),midias})});
+    if(!r.ok) throw new Error("post");
+    fm.reset(); $("#mural-prev").innerHTML="";
+    st.textContent = "Obrigado! Seu depoimento foi enviado e aparece no site depois da revisão.";
+  }catch(err){ st.textContent = "Não deu para enviar agora. Tente de novo em alguns minutos."; }
+  $("#mural-enviar").disabled = false;
+};
+carregarMural();
 $("#duvida-btn").href = zapLink("Olá! Gostei dos produtos da SAROM, mas fiquei com uma dúvida:");
 
 desenharFiltros(); desenharProdutos(); desenharEssencias(); atualizarLista(); desenharKit();
