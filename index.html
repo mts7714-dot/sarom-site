@@ -184,8 +184,12 @@
   .resumo li.sem{color:var(--suave);font-style:italic}
   .resumo .vazio{color:var(--suave);font-size:14.5px;margin:8px 0}
   .resumo label.extra{display:flex;align-items:center;gap:8px;font-size:14.5px;margin:12px 0 4px;cursor:pointer}
+  .resumo label.extra[hidden]{display:none}
   .resumo label.extra input{width:18px;height:18px;accent-color:var(--marrom)}
   .resumo textarea{width:100%;border:1px solid var(--linha);border-radius:10px;padding:9px 11px;font:14px Jost,sans-serif;resize:vertical;min-height:58px;margin-top:6px;background:var(--creme)}
+  .kit-desc{margin-top:12px;font-size:14px;color:var(--suave)}
+  .kit-desc div{display:flex;justify-content:space-between;padding:2px 0}
+  .kit-desc div:last-child{color:var(--salvia)}
   .resumo .total{display:flex;justify-content:space-between;font-weight:500;color:var(--marrom);margin:14px 0 4px;font-size:16px}
   .resumo .regra{font-size:13px;color:var(--suave);margin:2px 0 12px}
   .resumo .regra.ok{color:var(--salvia)}
@@ -294,7 +298,7 @@
       <div class="filtros" id="filtros"></div>
       <div class="grade" id="grade"></div>
       <div class="kit" id="kit" hidden>
-        <p class="kit-intro">Escolha quantas velas, sabonetes e difusores quiser, cada um com a sua essência. No fim, o kit vai pronto para o nosso WhatsApp.</p>
+        <p class="kit-intro" id="kit-intro"></p>
         <div id="kit-etapas"></div>
         <aside class="resumo" aria-live="polite">
           <h3>Seu kit</h3>
@@ -302,6 +306,7 @@
           <label class="extra"><input type="checkbox" id="kit-presente"> Embalagem para presente</label>
           <label class="extra"><input type="checkbox" id="kit-cartao-on"> Incluir cartão com mensagem</label>
           <textarea id="kit-cartao" placeholder="Escreva a mensagem do cartão" maxlength="200" hidden></textarea>
+          <div class="kit-desc" id="kit-desc"></div>
           <div class="total"><span>Total</span><span id="kit-total">Consulte o valor</span></div>
           <p class="regra" id="kit-obs" style="margin-top:-2px"></p>
           <p class="regra" id="kit-regra"></p>
@@ -528,8 +533,8 @@ const PRODUTOS = [
    desc:"Borrife em lençóis, travesseiros, sofá, almofadas, cortinas e tapetes, e deixe a casa toda perfumada. Aromas em breve.",
    ilustr:"spray", breve:true, aromas:[], preco:null},
   {id:"kit-sabonetes", cat:"Kits presente", linha:"Kit presente", nome:"Kit Sabonetes",
-   desc:"Sabonete massageador de Flor de Cerejeira, sabonete de Morango e sabonete de Maracujá, num saquinho de organza com laço.",
-   foto:"img/kit-sabonetes.jpg", pos:"50% 55%", aromas:["3 aromas"], preco:null},
+   desc:"Você escolhe os sabonetes e os aromas (Maracujá, Morango, Masculino ou massageador de Flor de Cerejeira). Vai num saquinho de organza com laço.",
+   foto:"img/kit-sabonetes.jpg", pos:"50% 55%", aromas:[], abreKit:"sabonetes", preco:null},
   {id:"kit-lembrancinha", cat:"Kits presente", linha:"Kit lembrancinha · 6 unidades", nome:"Kit Lembrancinha",
    desc:"6 mini sabonetes em formato de conchas e estrelas, num saquinho de organza. Ótimo para festas e lembrancinhas.",
    foto:"img/kit-lembrancinha-mini-sabonetes.jpg", pos:"50% 70%", aromas:["Flor de Cerejeira"], preco:12.00},
@@ -566,6 +571,25 @@ const KIT = [
    ]},
 ];
 const KIT_MINIMO = 2;              // quantidade mínima de itens no kit
+
+/* ===== KIT SABONETES =====
+   O cliente escolhe os sabonetes. Preço = soma dos sabonetes com desconto de kit. */
+const KIT_SAB = [
+  {id:"sabonetes", titulo:"Sabonetes", plural:"sabonetes", semTexto:"",
+   dica:"Escolha quantos quiser, de cada aroma. Vai num saquinho de organza com laço.",
+   opcoes:[
+     {id:"sabonete", nome:"Sabonete artesanal", sub:"Glicerinado, com sementes esfoliantes.",
+      foto:"img/sabonete-morango.jpg", aromas:["Maracujá","Morango","Masculino"], preco:9.99},
+     {id:"massageador", nome:"Sabonete massageador", sub:"Com bolinhas que massageiam a pele.",
+      foto:"img/sabonete-massageador.jpg", aromas:["Flor de Cerejeira"], preco:12.00},
+   ]},
+];
+const MODOS = {
+  kit:       {titulo:"Monte seu kit", grupos:KIT, minimo:KIT_MINIMO, desconto:0, embalagem:true, salvo:"sarom-kit",
+              intro:"Escolha quantas velas, sabonetes e difusores quiser, cada um com a sua essência. No fim, o kit vai pronto para o nosso WhatsApp."},
+  sabonetes: {titulo:"Kit Sabonetes", grupos:KIT_SAB, minimo:2, desconto:0.065, embalagem:false, salvo:"sarom-kit-sab",
+              intro:"Monte o seu Kit Sabonetes: escolha os sabonetes e os aromas. O valor do kit já sai com desconto em relação aos sabonetes avulsos."},
+};
 const PRECO_EMBALAGEM = null;      // valor da embalagem para presente (null = a combinar)
 
 /* ===== daqui para baixo é o funcionamento do site ===== */
@@ -616,10 +640,10 @@ function desenharFiltros(){
 }
 const ABA_KIT = "Monte seu kit";
 function escolherFiltro(c){
+  if(c===ABA_KIT) return abrirKit("kit");
   filtro = c; desenharFiltros();
-  const kit = c===ABA_KIT;
-  $("#grade").hidden = kit; $("#kit").hidden = !kit;
-  if(!kit) desenharProdutos();
+  $("#grade").hidden = false; $("#kit").hidden = true;
+  desenharProdutos();
   if(typeof barraKit==="function") barraKit();
 }
 
@@ -639,9 +663,9 @@ function desenharProdutos(){
         <div class="base">
         ${p.aromas.length ? `<span class="rotulo">${p.aromas.length>1?"Escolha o aroma":"Aroma"}</span>
         <div class="aromas">${p.aromas.map((a,i)=>`<button aria-pressed="${i===0}" data-a="${a}">${a}</button>`).join("")}</div>` : ""}
-        <span class="preco">${p.preco ? reais(p.preco) : p.abreKit ? "Valor conforme os itens" : "Consulte o valor"}</span>
+        <span class="preco">${p.preco ? reais(p.preco) : p.abreKit ? (p.abreKit==="sabonetes" ? "Valor conforme os sabonetes" : "Valor conforme os itens") : "Consulte o valor"}</span>
         <div class="acoes">
-          ${p.abreKit ? `<button class="botao" data-abrir-kit>Montar meu kit</button>` : p.breve
+          ${p.abreKit ? `<button class="botao" data-abrir-kit="${p.abreKit===true?"kit":p.abreKit}">Montar meu kit</button>` : p.breve
             ? `<a class="botao claro" target="_blank" rel="noopener" data-avise>Quero ser avisado</a>`
             : `<button class="botao" data-add>Adicionar à lista</button>`}
         </div>
@@ -700,25 +724,40 @@ function atualizarLista(){
   $("#lista-total").textContent = lista.length && lista.every(pr) ? "Total: " + reais(lista.reduce((s,i)=>s+pr(i)*i.qtd,0)) + " + frete conforme o CEP" : "";
 }
 /* ----- Monte seu kit ----- */
-let kit = {qtd:{}, sem:{}, presente:false, cartaoOn:false, cartao:""};
-try { kit = Object.assign(kit, JSON.parse(localStorage.getItem("sarom-kit")) || {}); } catch(e) {}
-const salvarKit = () => { try { localStorage.setItem("sarom-kit", JSON.stringify(kit)); } catch(e) {} };
+const kitVazio = () => ({qtd:{}, sem:{}, presente:false, cartaoOn:false, cartao:""});
+let modo = "kit";
+const M = () => MODOS[modo];
+const G = () => M().grupos;
+const estados = {};
+for(const m in MODOS){ estados[m] = kitVazio(); try { Object.assign(estados[m], JSON.parse(localStorage.getItem(MODOS[m].salvo)) || {}); } catch(e) {} }
+let kit = estados.kit;
+const salvarKit = () => { estados[modo] = kit; try { localStorage.setItem(M().salvo, JSON.stringify(kit)); } catch(e) {} };
+function abrirKit(m){
+  modo = MODOS[m] ? m : "kit"; kit = estados[modo];
+  filtro = modo==="kit" ? ABA_KIT : "Kits presente"; desenharFiltros();
+  $("#grade").hidden = true; $("#kit").hidden = false;
+  $("#kit-intro").innerHTML = (modo==="kit" ? "" : `<b style="font-family:Cinzel,serif;color:var(--marrom);font-size:20px;display:block;margin-bottom:4px">${M().titulo}</b>`) + M().intro +
+    (modo==="kit" ? "" : ` <a href="#produtos" id="kit-voltar" style="color:var(--marrom2)">Voltar aos produtos</a>`);
+  const v = $("#kit-voltar"); if(v) v.onclick = e => { e.preventDefault(); escolherFiltro("Todos"); };
+  $("#kit-presente").closest("label").hidden = !M().embalagem;
+  desenharKit(); barraKit();
+}
 const chave = (g,o,a) => g+"|"+o+"|"+a;
 const disponivel = g => g.opcoes.some(o=>o.aromas.length);
 const corDe = a => (ESSENCIAS[a]||{}).cor || "#ddd";
 
 function itensKit(){
   const out = [];
-  KIT.forEach(g=>{ if(kit.sem[g.id]) return;
+  G().forEach(g=>{ if(kit.sem[g.id]) return;
     g.opcoes.forEach(o=>o.aromas.forEach(a=>{ const n = kit.qtd[chave(g.id,o.id,a)]||0; if(n>0) out.push({g,o,a,n}); })); });
   return out;
 }
 
 function desenharKit(){
-  $("#kit-etapas").innerHTML = KIT.map((g,gi)=>`
+  $("#kit-etapas").innerHTML = G().map((g,gi)=>`
     <div class="etapa${kit.sem[g.id]?" desligada":""}" data-g="${g.id}">
       <div class="etapa-topo"><span class="etapa-num">${gi+1}</span><div><h3>${g.titulo}</h3><p>${g.dica}</p></div></div>
-      ${disponivel(g) ? `<label class="nao-quero"><input type="checkbox" data-sem="${g.id}" ${kit.sem[g.id]?"checked":""}> ${g.semTexto}</label>` : ""}
+      ${disponivel(g) && g.semTexto ? `<label class="nao-quero"><input type="checkbox" data-sem="${g.id}" ${kit.sem[g.id]?"checked":""}> ${g.semTexto}</label>` : ""}
       ${g.opcoes.map(o=>`
         <div class="opcao">
           ${o.ilustr ? `<div class="mini">${ILUSTR[o.ilustr]}</div>` : `<img class="mini" src="${o.foto}" alt="" loading="lazy">`}
@@ -749,7 +788,7 @@ function resumoKit(){
   const itens = itensKit();
   const total = itens.reduce((s,i)=>s+i.n,0);
   let html = "";
-  KIT.forEach(g=>{
+  G().forEach(g=>{
     if(!disponivel(g)) return;
     if(kit.sem[g.id]) { html += `<li class="sem">${g.semTexto}</li>`; return; }
     itens.filter(i=>i.g===g).forEach(i=>{ html += `<li><span>${i.n}x ${i.o.nome}<br><small style="color:var(--suave)">${i.a}</small></span><span>${i.o.preco?reais(i.o.preco*i.n):""}</span></li>`; });
@@ -761,46 +800,52 @@ function resumoKit(){
   if($("#kit-cartao").value !== kit.cartao) $("#kit-cartao").value = kit.cartao;
   // total: só aparece quando todos os itens escolhidos têm preço
   const temPreco = itens.length && itens.every(i=>i.o.preco);
-  const soma = itens.reduce((s,i)=>s+(i.o.preco||0)*i.n,0) + (kit.presente&&PRECO_EMBALAGEM?PRECO_EMBALAGEM:0);
+  const presente = kit.presente && M().embalagem;
+  const subtotal = itens.reduce((s,i)=>s+(i.o.preco||0)*i.n,0) + (presente&&PRECO_EMBALAGEM?PRECO_EMBALAGEM:0);
+  const desconto = Math.round(subtotal * M().desconto * 100) / 100;
+  const soma = subtotal - desconto;
+  $("#kit-desc").innerHTML = temPreco && desconto ? `<div><span>Soma dos sabonetes</span><span>${reais(subtotal)}</span></div><div><span>Desconto de kit (${(M().desconto*100).toLocaleString("pt-BR")}%)</span><span>− ${reais(desconto)}</span></div>` : "";
   $("#kit-total").textContent = temPreco ? reais(soma) : "Consulte o valor";
-  $("#kit-obs").textContent = temPreco ? ("Frete conforme o CEP" + (kit.presente&&PRECO_EMBALAGEM==null ? " · embalagem a combinar" : "") + ".") : "";
-  const ok = total >= KIT_MINIMO;
+  $("#kit-obs").textContent = temPreco ? ("Frete conforme o CEP" + (presente&&PRECO_EMBALAGEM==null ? " · embalagem a combinar" : "") + ".") : "";
+  const ok = total >= M().minimo;
   $("#kit-regra").className = "regra" + (ok?" ok":"");
-  $("#kit-regra").textContent = ok ? `✓ ${total} itens no kit` : `O kit precisa de pelo menos ${KIT_MINIMO} itens (agora: ${total}).`;
+  $("#kit-regra").textContent = ok ? `✓ ${total} itens no kit` : `O kit precisa de pelo menos ${M().minimo} itens (agora: ${total}).`;
   $("#kit-enviar").setAttribute("aria-disabled", !ok);
   $("#kit-barra-qtd").textContent = total; barraKit();
-  $("#kit-enviar").href = ok ? zapLink(mensagemKit(itens, temPreco?soma:null)) : "#";
+  $("#kit-enviar").href = ok ? zapLink(mensagemKit(itens, temPreco?soma:null, temPreco?subtotal:null, desconto)) : "#";
 }
 
-function mensagemKit(itens, soma){
-  let m = "*Pedido SAROM – Monte seu kit*\n";
-  KIT.forEach(g=>{
+function mensagemKit(itens, soma, subtotal, desconto){
+  let m = `*Pedido SAROM – ${M().titulo}*\n`;
+  G().forEach(g=>{
     if(!disponivel(g)) return;
     m += `\n*${g.titulo}*\n`;
     const meus = itens.filter(i=>i.g===g);
     m += meus.length ? meus.map(i=>`• ${i.n}x ${i.o.nome.replace(" · "," ")} – ${i.a}${i.o.preco?` (${reais(i.o.preco*i.n)})`:""}`).join("\n") + "\n" : `• ${g.semTexto}\n`;
   });
-  m += `\nEmbalagem para presente: ${kit.presente?"sim":"não"}`;
+  if(M().embalagem) m += `\nEmbalagem para presente: ${kit.presente?"sim":"não"}`;
   if(kit.cartaoOn) m += `\nCartão com mensagem: ${kit.cartao.trim() ? "“"+kit.cartao.trim()+"”" : "sim (mensagem a combinar)"}`;
-  if(soma!=null) m += `\n\nTotal dos produtos: ${reais(soma)}` + (kit.presente&&PRECO_EMBALAGEM==null?" (+ embalagem a combinar)":"");
-  return m + `\n\nPode me passar o frete para o meu CEP e o prazo?`;
+  if(soma!=null && desconto) m += `\n\nSoma dos sabonetes: ${reais(subtotal)}\nDesconto de kit (${(M().desconto*100).toLocaleString("pt-BR")}%): − ${reais(desconto)}`;
+  if(soma!=null) m += `\n${desconto?"":"\n"}Total dos produtos: ${reais(soma)}` + (kit.presente&&M().embalagem&&PRECO_EMBALAGEM==null?" (+ embalagem a combinar)":"");
+  return (m + `\n\nPode me passar o frete para o meu CEP e o prazo?`).replace(/\n{3,}/g,"\n\n");
 }
 
 let resumoVisivel = false;
 function barraKit(){ const n = itensKit().reduce((s,i)=>s+i.n,0);
-  $("#kit-barra").classList.toggle("on", filtro===ABA_KIT && n>0 && !resumoVisivel); }
+  $("#kit-barra").classList.toggle("on", !$("#kit").hidden && n>0 && !resumoVisivel); }
 try { new IntersectionObserver(es=>{ resumoVisivel = es[0].isIntersecting; barraKit(); }).observe($(".resumo")); } catch(e) {}
 $("#kit-barra").onclick = () => $(".resumo").scrollIntoView({behavior:"smooth", block:"center"});
 $("#kit-presente").onchange = e => { kit.presente = e.target.checked; salvarKit(); resumoKit(); };
 $("#kit-cartao-on").onchange = e => { kit.cartaoOn = e.target.checked; salvarKit(); resumoKit(); if(kit.cartaoOn) $("#kit-cartao").focus(); };
 $("#kit-cartao").oninput = e => { kit.cartao = e.target.value; salvarKit(); resumoKit(); };
-$("#kit-limpar").onclick = () => { kit = {qtd:{}, sem:{}, presente:false, cartaoOn:false, cartao:""}; salvarKit(); desenharKit(); };
+$("#kit-limpar").onclick = () => { kit = kitVazio(); salvarKit(); desenharKit(); };
 document.addEventListener("click", e => {
-  if(!e.target.closest("[data-abrir-kit]")) return;
-  e.preventDefault(); escolherFiltro(ABA_KIT);
+  const el = e.target.closest("[data-abrir-kit]");
+  if(!el) return;
+  e.preventDefault(); abrirKit(el.dataset.abrirKit || "kit");
   $("#produtos").scrollIntoView({behavior:"smooth"});
 });
-const abrirPeloLink = () => { if(location.hash==="#monte-seu-kit") setTimeout(()=>{ escolherFiltro(ABA_KIT); $("#produtos").scrollIntoView(); }, 0); };
+const abrirPeloLink = () => { if(location.hash==="#monte-seu-kit") setTimeout(()=>{ abrirKit("kit"); $("#produtos").scrollIntoView(); }, 0); };
 abrirPeloLink(); window.addEventListener("hashchange", abrirPeloLink);
 
 let t; function aviso(txt){ const el=$("#toast"); el.textContent=txt; el.classList.add("on"); clearTimeout(t); t=setTimeout(()=>el.classList.remove("on"),1800); }
