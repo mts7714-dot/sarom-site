@@ -411,9 +411,10 @@
       <div>
         <h2 style="font-size:clamp(30px,4.5vw,40px)">Sobre a SAROM</h2>
         <div class="enfeite" style="margin:14px 0 18px;--creme:var(--creme2)"></div>
-        <p>A SAROM é uma marca de produtos artesanais feitos à mão, em pequenos lotes, aqui em São Paulo: sabonetes, velas aromáticas e aromatizadores pensados para deixar a casa mais acolhedora e para presentear.</p>
-        <p>O nome SAROM representa beleza, pureza, resiliência e prosperidade, e carrega o simbolismo da graça e do acolhimento. É isso que queremos levar para cada casa.</p>
-        <p>Usamos cera vegetal de coco nas velas e base glicerinada nos sabonetes, com essências selecionadas e embalagens caprichadas. Cada peça é criada com amor, do aroma ao acabamento.</p>
+        <p>A SAROM nasceu da vontade de transformar momentos simples em pequenos rituais de cuidado. Somos uma marca artesanal de São Paulo: cada sabonete, vela e aromatizador é feito à mão, em pequenos lotes, para perfumar a casa, deixar o fim do dia mais leve e virar um presente cheio de carinho.</p>
+        <p>O nome SAROM carrega beleza, pureza, resiliência e prosperidade, e o simbolismo da graça e do acolhimento. É essa sensação que queremos que você sinta ao abrir cada embalagem.</p>
+        <p>Nas velas, usamos cera vegetal de coco, que queima de forma limpa e uniforme. Nos sabonetes, base glicerinada, suave com a pele. As essências são escolhidas com cuidado, e cada peça é finalizada com uma embalagem caprichada, pronta para presentear. Tudo criado com amor, do aroma ao acabamento.</p>
+        <p style="margin-top:18px"><a class="botao claro-ouro" href="https://instagram.com/sarom_aromas" target="_blank" rel="noopener">Siga @sarom_aromas no Instagram</a></p>
       </div>
     </div>
   </section>
@@ -475,7 +476,7 @@
    CONFIGURAÇÃO DA LOJA: troque aqui o número e o Instagram
    ========================================================= */
 const WHATSAPP = "5511957756980";         // DDI 55 + DDD + número, só números
-const INSTAGRAM = "";   // link do perfil da loja (ex.: "https://instagram.com/sarom_aromas"). Vazio = "Instagram em breve"
+const INSTAGRAM = "https://instagram.com/sarom_aromas";   // link do perfil da loja (ex.: "https://instagram.com/sarom_aromas"). Vazio = "Instagram em breve"
 
 /* Mural de depoimentos (clientes postam com nome, produto, fotos e vídeos).
    Fica guardado no Supabase. Vazio = modo de teste (o formulário aparece, mas não envia). */
@@ -864,7 +865,7 @@ let t; function aviso(txt){ const el=$("#toast"); el.textContent=txt; el.classLi
 $("#lista-btn").onclick = () => $("#dlg").showModal();
 $("#fechar").onclick = () => $("#dlg").close();
 $("#zap-geral").href = $("#zap-rodape").href = zapLink("Olá! Vi o catálogo da SAROM e gostaria de mais informações.");
-if(INSTAGRAM) $("#insta").outerHTML = `<a id="insta" href="${INSTAGRAM}" target="_blank" rel="noopener">Instagram</a>`;
+if(INSTAGRAM) $("#insta").outerHTML = `<a id="insta" href="${INSTAGRAM}" target="_blank" rel="noopener">Instagram @sarom_aromas</a>`;
 $("#zap-natal").href = zapLink("Olá! Quero reservar a mini vela de Natal da SAROM. Quantidade: ");
 /* ----- Mural de depoimentos ----- */
 const esc = t => String(t??"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
