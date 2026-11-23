@@ -584,7 +584,7 @@ const KIT = [
 const KIT_MINIMO = 2;              // quantidade mínima de itens no kit
 
 /* ===== KIT SABONETES =====
-   O cliente escolhe os sabonetes. Preço = soma dos sabonetes com desconto de kit. */
+   O cliente escolhe os sabonetes. Preço = soma dos sabonetes (desconto: 0 = sem desconto). */
 const KIT_SAB = [
   {id:"sabonetes", titulo:"Sabonetes", plural:"sabonetes", semTexto:"",
    dica:"Escolha quantos quiser, de cada aroma. Vai num saquinho de organza com laço.",
@@ -598,8 +598,8 @@ const KIT_SAB = [
 const MODOS = {
   kit:       {titulo:"Monte seu kit", grupos:KIT, minimo:KIT_MINIMO, desconto:0, embalagem:true, salvo:"sarom-kit",
               intro:"Escolha quantas velas, sabonetes e difusores quiser, cada um com a sua essência. No fim, o kit vai pronto para o nosso WhatsApp."},
-  sabonetes: {titulo:"Kit Sabonetes", grupos:KIT_SAB, minimo:2, desconto:0.065, embalagem:false, salvo:"sarom-kit-sab",
-              intro:"Monte o seu Kit Sabonetes: escolha os sabonetes e os aromas. O valor do kit já sai com desconto em relação aos sabonetes avulsos."},
+  sabonetes: {titulo:"Kit Sabonetes", grupos:KIT_SAB, minimo:2, desconto:0, embalagem:false, salvo:"sarom-kit-sab",
+              intro:"Monte o seu Kit Sabonetes: escolha os sabonetes e os aromas. O valor do kit é a soma dos sabonetes escolhidos."},
 };
 const PRECO_EMBALAGEM = null;      // valor da embalagem para presente (null = a combinar)
 
