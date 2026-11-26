@@ -161,6 +161,10 @@
   .pix .teste{background:#FBE3C8;color:#7A3E00;border-radius:8px;padding:6px 10px;font-size:12.5px;margin-bottom:10px}
   .pix-abrir{width:100%;justify-content:center;margin-top:14px}
   .pix-abrir[hidden]{display:none}
+  .entrega{margin-top:14px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+  .entrega[hidden]{display:none}
+  .entrega label{display:flex;gap:8px;align-items:center;cursor:pointer}
+  .entrega input{accent-color:var(--marrom)}
 
   /* lista de pedido */
   .duvida-btn{position:fixed;right:16px;bottom:16px;z-index:31;display:inline-flex;align-items:center;gap:10px;background:var(--branco);color:var(--marrom);border:1px solid var(--dourado);border-radius:999px;padding:8px 18px 8px 8px;text-decoration:none;box-shadow:0 6px 20px rgba(60,35,20,.18);font:500 14.5px/1.2 Jost,sans-serif;transition:transform .2s}
@@ -508,12 +512,16 @@
   <div class="dlg">
     <h3>Minha lista</h3>
     <div id="itens"></div>
+    <div class="entrega" id="entrega" hidden>
+      <label><input type="radio" name="entrega" value="entrega" checked> <span id="entrega-txt">Entrega</span></label>
+      <label><input type="radio" name="entrega" value="retirada"> Retirar com a gente (sem frete)</label>
+    </div>
     <p id="lista-total" style="text-align:right;font-weight:500;color:var(--marrom);margin:12px 0 0"></p>
     <button class="botao claro pix-abrir" type="button" id="pix-abrir" hidden>Pagar com Pix</button>
     <div class="pix" id="pix" hidden>
       <div class="teste" id="pix-teste" hidden>Prévia: chave Pix ainda não configurada. Este QR code é só de exemplo e não recebe pagamento.</div>
       <h4>Pix de <span id="pix-valor"></span></h4>
-      <p>Valor dos produtos. O frete é combinado no WhatsApp e pago à parte. Depois de pagar, envie o pedido e o comprovante no WhatsApp.</p>
+      <p id="pix-explica"></p>
       <div class="qr" id="pix-qr"></div>
       <textarea id="pix-codigo" readonly aria-label="Pix copia e cola"></textarea>
       <button class="botao claro copiar" type="button" id="pix-copiar">Copiar código Pix</button>
@@ -546,6 +554,11 @@ const MURAL = {   // projeto Supabase "sarom-site". A chave abaixo é pública (
    Enquanto "chave" estiver vazia, o site mostra um QR code de EXEMPLO com aviso (não recebe pagamento).
    nome: nome do recebedor, sem acento, até 25 letras. cidade: sem acento, até 15 letras. */
 const PIX = { chave: "", nome: "SAROM", cidade: "SAO PAULO" };
+
+/* ===== FRETE FIXO =====
+   valor: frete fixo para entrega em São Paulo e região (ex.: 10.00). null = frete calculado no WhatsApp.
+   Com valor definido, a lista mostra "Entrega" ou "Retirar" e o Pix já cobra produtos + frete. */
+const FRETE = { valor: null, onde: "São Paulo e região" };
 
 /* Essências (aparecem na seção "Nossas essências") */
 const ESSENCIAS = {
@@ -795,11 +808,18 @@ function mensagem(){
   const linhas = lista.map(i=>`• ${i.qtd}x ${i.nome}${i.nome.includes(i.aroma)?"":` (${i.aroma})`}${preco(i)?` – ${reais(preco(i)*i.qtd)}`:""}${i.obs?`\n   Obs.: ${i.obs}`:""}`).join("\n");
   const tudo = lista.every(i=>preco(i));
   const soma = lista.reduce((s,i)=>s+(preco(i)||0)*i.qtd,0);
-  const pix = pagarPix && tudo ? `\n\nVou pagar os produtos pelo Pix do site (${reais(soma)}) e envio o comprovante aqui.` : "";
-  return `Olá! Vi o catálogo da SAROM e gostaria de fazer um pedido:\n\n${linhas}${tudo?`\n\nTotal dos produtos: ${reais(soma)}`:""}${pix}\n\nPode me passar o frete para o meu CEP e o prazo?`;
+  const fixo = FRETE.valor != null, ret = retirada(), frete = fixo && !ret ? FRETE.valor : 0;
+  const totais = !tudo ? "" : fixo
+    ? `\n\nProdutos: ${reais(soma)}\n${ret ? "Retirada (sem frete)" : `Frete: ${reais(frete)}`}\nTotal: ${reais(soma+frete)}`
+    : `\n\nTotal dos produtos: ${reais(soma)}`;
+  const pix = pagarPix && tudo ? `\n\nVou pagar pelo Pix do site (${reais(soma+frete)}) e envio o comprovante aqui.` : "";
+  const fim = !fixo ? "Pode me passar o frete para o meu CEP e o prazo?" : ret ? "Quero retirar. Pode me passar o local e o horário?" : "Vou mandar o endereço de entrega. Qual o prazo?";
+  return `Olá! Vi o catálogo da SAROM e gostaria de fazer um pedido:\n\n${linhas}${totais}${pix}\n\n${fim}`;
 }
 /* ----- Pix (BR Code estático, padrão do Banco Central) ----- */
 let pagarPix = false;
+const retirada = () => FRETE.valor != null && document.querySelector('input[name=entrega][value=retirada]').checked;
+document.querySelectorAll('input[name=entrega]').forEach(r=>r.onchange=()=>atualizarLista());
 const semAcento = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase();
 const campo = (id, v) => id + String(v.length).padStart(2,"0") + v;
 function crc16(t){ let c = 0xFFFF;
@@ -840,11 +860,17 @@ function atualizarLista(){
   $("#enviar").href = zapLink(mensagem());
   const pr = i => (PRODUTOS.find(p=>p.id===i.id)||{}).preco;
   const temValor = lista.length && lista.every(pr), soma = lista.reduce((s,i)=>s+(pr(i)||0)*i.qtd,0);
-  $("#lista-total").textContent = temValor ? "Total: " + reais(soma) + " + frete conforme o CEP" : "";
+  const fixo = FRETE.valor != null, frete = fixo && !retirada() ? FRETE.valor : 0;
+  $("#entrega").hidden = !(fixo && lista.length);
+  $("#entrega-txt").textContent = fixo ? `Entrega em ${FRETE.onde} (frete ${reais(FRETE.valor)})` : "";
+  $("#lista-total").textContent = !temValor ? "" : !fixo ? "Total: " + reais(soma) + " + frete conforme o CEP"
+    : `Total: ${reais(soma+frete)}` + (frete ? ` (produtos ${reais(soma)} + frete ${reais(frete)})` : "");
   if(!temValor) pagarPix = false;
   $("#pix-abrir").hidden = !temValor || pagarPix;
   $("#pix").hidden = !(temValor && pagarPix);
-  if(temValor && pagarPix) desenharPix(soma);
+  $("#pix-explica").textContent = !fixo ? "Valor dos produtos. O frete é combinado no WhatsApp e pago à parte. Depois de pagar, envie o pedido e o comprovante no WhatsApp."
+    : (frete ? "Produtos + frete." : "Produtos, com retirada sem frete.") + " Depois de pagar, envie o pedido e o comprovante no WhatsApp.";
+  if(temValor && pagarPix) desenharPix(soma+frete);
 }
 /* ----- Monte seu kit ----- */
 const kitVazio = () => ({qtd:{}, sem:{}, presente:false, cartaoOn:false, cartao:""});
