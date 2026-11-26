@@ -149,6 +149,19 @@
   .pg .qtd button{width:34px;height:34px;border-radius:50%;border:1px solid var(--linha);background:var(--creme);color:var(--marrom);font-size:18px;cursor:pointer}
   @media (max-width:760px){ .pg{grid-template-columns:1fr;gap:20px;padding-top:16px} .pg>*{min-width:0} .pg .foto{aspect-ratio:4/3} .pg h2{font-size:30px} }
 
+  /* Pix */
+  .pix{margin-top:16px;border:1px solid var(--linha);border-radius:14px;padding:14px;background:var(--creme)}
+  .pix[hidden]{display:none}
+  .pix h4{margin:0 0 4px;font:500 16px Jost,sans-serif;color:var(--marrom)}
+  .pix p{margin:0 0 10px;font-size:13.5px;color:var(--suave)}
+  .pix .qr{display:flex;justify-content:center;background:#fff;border-radius:10px;padding:10px;margin:0 auto 10px;width:max-content}
+  .pix .qr img{width:190px;height:190px;image-rendering:pixelated}
+  .pix textarea{width:100%;height:64px;font:12px monospace;border:1px solid var(--linha);border-radius:10px;padding:8px;resize:none;background:#fff;color:var(--texto)}
+  .pix .copiar{width:100%;justify-content:center;margin-top:8px}
+  .pix .teste{background:#FBE3C8;color:#7A3E00;border-radius:8px;padding:6px 10px;font-size:12.5px;margin-bottom:10px}
+  .pix-abrir{width:100%;justify-content:center;margin-top:14px}
+  .pix-abrir[hidden]{display:none}
+
   /* lista de pedido */
   .duvida-btn{position:fixed;right:16px;bottom:16px;z-index:31;display:inline-flex;align-items:center;gap:10px;background:var(--branco);color:var(--marrom);border:1px solid var(--dourado);border-radius:999px;padding:8px 18px 8px 8px;text-decoration:none;box-shadow:0 6px 20px rgba(60,35,20,.18);font:500 14.5px/1.2 Jost,sans-serif;transition:transform .2s}
   .duvida-btn:hover{transform:translateY(-2px)}
@@ -496,6 +509,15 @@
     <h3>Minha lista</h3>
     <div id="itens"></div>
     <p id="lista-total" style="text-align:right;font-weight:500;color:var(--marrom);margin:12px 0 0"></p>
+    <button class="botao claro pix-abrir" type="button" id="pix-abrir" hidden>Pagar com Pix</button>
+    <div class="pix" id="pix" hidden>
+      <div class="teste" id="pix-teste" hidden>Prévia: chave Pix ainda não configurada. Este QR code é só de exemplo e não recebe pagamento.</div>
+      <h4>Pix de <span id="pix-valor"></span></h4>
+      <p>Valor dos produtos. O frete é combinado no WhatsApp e pago à parte. Depois de pagar, envie o pedido e o comprovante no WhatsApp.</p>
+      <div class="qr" id="pix-qr"></div>
+      <textarea id="pix-codigo" readonly aria-label="Pix copia e cola"></textarea>
+      <button class="botao claro copiar" type="button" id="pix-copiar">Copiar código Pix</button>
+    </div>
     <div class="rodape">
       <button class="botao claro" id="fechar">Continuar vendo</button>
       <a class="botao zap" id="enviar" href="#" target="_blank" rel="noopener">Enviar no WhatsApp</a>
@@ -504,6 +526,7 @@
 </dialog>
 <div class="toast" id="toast"></div>
 
+<script src="js/qrcode.js"></script>
 <script>
 /* =========================================================
    CONFIGURAÇÃO DA LOJA: troque aqui o número e o Instagram
@@ -517,6 +540,12 @@ const MURAL = {   // projeto Supabase "sarom-site". A chave abaixo é pública (
   url: "https://sosdjssgkheytbkucpfe.supabase.co",
   chave: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNvc2Rqc3Nna2hleXRia3VjcGZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzODQ5ODAsImV4cCI6MjExMDk2MDk4MH0.BjIEkjAG82qvxMoJ2Zbe27v7Ye2C83VQVTrKTS_naMc"
 };
+
+/* ===== PIX =====
+   Chave Pix da conta (Nubank). Pode ser CPF, celular (+5511...), e-mail ou chave aleatória.
+   Enquanto "chave" estiver vazia, o site mostra um QR code de EXEMPLO com aviso (não recebe pagamento).
+   nome: nome do recebedor, sem acento, até 25 letras. cidade: sem acento, até 15 letras. */
+const PIX = { chave: "", nome: "SAROM", cidade: "SAO PAULO" };
 
 /* Essências (aparecem na seção "Nossas essências") */
 const ESSENCIAS = {
@@ -766,8 +795,35 @@ function mensagem(){
   const linhas = lista.map(i=>`• ${i.qtd}x ${i.nome}${i.nome.includes(i.aroma)?"":` (${i.aroma})`}${preco(i)?` – ${reais(preco(i)*i.qtd)}`:""}${i.obs?`\n   Obs.: ${i.obs}`:""}`).join("\n");
   const tudo = lista.every(i=>preco(i));
   const soma = lista.reduce((s,i)=>s+(preco(i)||0)*i.qtd,0);
-  return `Olá! Vi o catálogo da SAROM e gostaria de fazer um pedido:\n\n${linhas}${tudo?`\n\nTotal dos produtos: ${reais(soma)}`:""}\n\nPode me passar o frete para o meu CEP e o prazo?`;
+  const pix = pagarPix && tudo ? `\n\nVou pagar os produtos pelo Pix do site (${reais(soma)}) e envio o comprovante aqui.` : "";
+  return `Olá! Vi o catálogo da SAROM e gostaria de fazer um pedido:\n\n${linhas}${tudo?`\n\nTotal dos produtos: ${reais(soma)}`:""}${pix}\n\nPode me passar o frete para o meu CEP e o prazo?`;
 }
+/* ----- Pix (BR Code estático, padrão do Banco Central) ----- */
+let pagarPix = false;
+const semAcento = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase();
+const campo = (id, v) => id + String(v.length).padStart(2,"0") + v;
+function crc16(t){ let c = 0xFFFF;
+  for(let i=0;i<t.length;i++){ c ^= t.charCodeAt(i) << 8; for(let j=0;j<8;j++) c = (c & 0x8000) ? ((c << 1) ^ 0x1021) & 0xFFFF : (c << 1) & 0xFFFF; }
+  return c.toString(16).toUpperCase().padStart(4,"0"); }
+function codigoPix(valor){
+  const chave = PIX.chave || "exemplo@sarom.com.br";
+  const s = campo("00","01") + campo("26", campo("00","br.gov.bcb.pix") + campo("01", chave)) + campo("52","0000") + campo("53","986")
+    + campo("54", valor.toFixed(2)) + campo("58","BR") + campo("59", semAcento(PIX.nome).slice(0,25)) + campo("60", semAcento(PIX.cidade).slice(0,15))
+    + campo("62", campo("05","***")) + "6304";
+  return s + crc16(s);
+}
+function desenharPix(valor){
+  const cod = codigoPix(valor);
+  const qr = qrcode(0, "M"); qr.addData(cod); qr.make();
+  $("#pix-qr").innerHTML = qr.createImgTag(6, 0);
+  $("#pix-codigo").value = cod;
+  $("#pix-valor").textContent = reais(valor);
+  $("#pix-teste").hidden = !!PIX.chave;
+}
+$("#pix-abrir").onclick = () => { pagarPix = true; atualizarLista(); $("#pix").scrollIntoView({behavior:"smooth", block:"nearest"}); };
+$("#pix-copiar").onclick = () => { const t = $("#pix-codigo"); t.select();
+  (navigator.clipboard ? navigator.clipboard.writeText(t.value) : Promise.reject()).then(()=>aviso("Código Pix copiado"), ()=>{ document.execCommand("copy"); aviso("Código Pix copiado"); }); };
+
 function atualizarLista(){
   const total = lista.reduce((s,i)=>s+i.qtd,0);
   $("#lista-btn").hidden = total===0;
@@ -783,7 +839,12 @@ function atualizarLista(){
   });
   $("#enviar").href = zapLink(mensagem());
   const pr = i => (PRODUTOS.find(p=>p.id===i.id)||{}).preco;
-  $("#lista-total").textContent = lista.length && lista.every(pr) ? "Total: " + reais(lista.reduce((s,i)=>s+pr(i)*i.qtd,0)) + " + frete conforme o CEP" : "";
+  const temValor = lista.length && lista.every(pr), soma = lista.reduce((s,i)=>s+(pr(i)||0)*i.qtd,0);
+  $("#lista-total").textContent = temValor ? "Total: " + reais(soma) + " + frete conforme o CEP" : "";
+  if(!temValor) pagarPix = false;
+  $("#pix-abrir").hidden = !temValor || pagarPix;
+  $("#pix").hidden = !(temValor && pagarPix);
+  if(temValor && pagarPix) desenharPix(soma);
 }
 /* ----- Monte seu kit ----- */
 const kitVazio = () => ({qtd:{}, sem:{}, presente:false, cartaoOn:false, cartao:""});
