@@ -487,18 +487,28 @@ const MURAL = {   // projeto Supabase "sarom-site". A chave abaixo é pública (
 
 /* Essências (aparecem na seção "Nossas essências") */
 const ESSENCIAS = {
+  "Flor de Cerejeira":  {cor:"#F4B9C8", notas:"Floral, suave e delicado.", em:"Sabonete"},
   "Maracujá":           {cor:"#D8CF3A", notas:"Frutado, tropical e alegre.", em:"Sabonete"},
   "Morango":            {cor:"#EE9A95", notas:"Doce, delicado e aconchegante.", em:"Sabonete"},
+  "Maçã com Canela":    {cor:"#C8643C", notas:"Doce e especiado, com cheiro de casa quentinha.", em:"Sabonete"},
+  "Peony Garden":       {cor:"#E7A3B8", notas:"Floral, romântico e delicado.", em:"Sabonete"},
+  "Camomila":           {cor:"#F1DC8A", notas:"Suave e calmante, ótima para relaxar.", em:"Sabonete"},
+  "Sweet Vanilla":      {cor:"#F0DDB4", notas:"Doce, cremoso e aconchegante.", em:"Sabonete"},
+  "Capim-Limão":        {cor:"#C9D3A2", notas:"Fresco, cítrico e revigorante.", em:"Sabonete e vela"},
+  "Limão Siciliano":    {cor:"#F2E66B", notas:"Cítrico, limpo e energizante.", em:"Sabonete"},
+  "Lavanda":            {cor:"#C7B8DC", notas:"Floral e calmante, ideal para relaxar.", em:"Sabonete"},
+  "Bambu":              {cor:"#B9C9A3", notas:"Verde, limpo e leve.", em:"Sabonete"},
+  "Masculino":          {cor:"#4A5468", notas:"Fresco e marcante, pensado para ele (For Men).", em:"Sabonete"},
   "Gengibre e Pimenta": {cor:"#EFE5CF", notas:"Quente, picante e marcante.", em:"Vela"},
   "Frutas Vermelhas":   {cor:"#F2A99A", notas:"Doce e vibrante, com notas de amora e framboesa.", em:"Vela"},
-  "Capim-Limão":        {cor:"#C9D3A2", notas:"Fresco, cítrico e revigorante.", em:"Vela"},
-  "Flor de Cerejeira":  {cor:"#F4B9C8", notas:"Floral, suave e delicado.", em:"Sabonete"},
-  "Masculino":          {cor:"#4A5468", notas:"Fresco e marcante, pensado para ele.", em:"Sabonete"},
-  "Chá Branco":         {cor:"#EDE8CF", notas:"Leve, limpo e relaxante.", em:"Vela"},
   "Mirra com Pimenta":  {cor:"#8DBF5A", notas:"Amadeirado, quente e envolvente.", em:"Vela"},
-  "Lavanda":            {cor:"#C7B8DC", notas:"Floral e calmante, ideal para relaxar.", em:"Em breve"},
-  "Bambu":              {cor:"#B9C9A3", notas:"Verde, limpo e leve.", em:"Em breve"},
+  "Chá Branco":         {cor:"#EDE8CF", notas:"Leve, limpo e relaxante.", em:"Vela"},
 };
+
+/* Essências dos sabonetes (usadas no massageador, no kit lembrancinha e nos kits).
+   Difusor e home spray vão usar estas mesmas quando chegarem as fotos. */
+const ESS_SABONETE = ["Flor de Cerejeira","Maracujá","Morango","Maçã com Canela","Peony Garden","Camomila",
+  "Sweet Vanilla","Capim-Limão","Limão Siciliano","Lavanda","Bambu","Masculino"];
 
 /* Produtos. REGRAS:
    1) Um card para cada produto + aroma, cada um com a sua foto.
@@ -519,7 +529,7 @@ const PRODUTOS = [
    foto:"img/sabonete-masculino.jpg", pos:"50% 62%", aromas:["Masculino"], preco:9.99},
   {id:"sab-massageador", cat:"Sabonetes", linha:"Sabonete massageador", nome:"Sabonete Massageador",
    desc:"Formato com bolinhas que massageiam a pele durante o banho.",
-   foto:"img/sabonete-massageador.jpg", pos:"50% 62%", aromas:["Maracujá","Morango","Flor de Cerejeira","Masculino"], preco:12.00},
+   foto:"img/sabonete-massageador.jpg", pos:"50% 62%", aromas:ESS_SABONETE, preco:12.00},
   {id:"sab-cerejeira", cat:"Sabonetes", linha:"Sabonete artesanal", nome:"Sabonete Flor de Cerejeira",
    desc:"Glicerinado, em barra, com aroma floral suave e delicado.",
    foto:"img/sabonete-flor-cerejeira.jpg", pos:"50% 62%", aromas:["Flor de Cerejeira"], preco:9.99},
@@ -545,11 +555,11 @@ const PRODUTOS = [
    desc:"Borrife em lençóis, travesseiros, sofá, almofadas, cortinas e tapetes, e deixe a casa toda perfumada. Aromas em breve.",
    ilustr:"spray", breve:true, aromas:[], preco:null},
   {id:"kit-sabonetes", cat:"Kits presente", linha:"Kit presente", nome:"Kit Sabonetes",
-   desc:"Você escolhe os sabonetes e os aromas (Maracujá, Morango, Flor de Cerejeira, Masculino ou o massageador). Vai num saquinho de organza com laço.",
+   desc:"Você escolhe os sabonetes (artesanal ou massageador) e as essências, entre 12 opções. Vai num saquinho de organza com laço.",
    foto:"img/kit-sabonetes.jpg", pos:"50% 55%", aromas:[], abreKit:"sabonetes", preco:null},
   {id:"kit-lembrancinha", cat:"Kits presente", linha:"Kit lembrancinha · 6 unidades", nome:"Kit Lembrancinha",
    desc:"6 mini sabonetes em formato de conchas e estrelas, num saquinho de organza. Ótimo para festas e lembrancinhas.",
-   foto:"img/kit-lembrancinha-mini-sabonetes.jpg", pos:"50% 70%", aromas:["Maracujá","Morango","Flor de Cerejeira","Masculino"], preco:12.00},
+   foto:"img/kit-lembrancinha-mini-sabonetes.jpg", pos:"50% 70%", aromas:ESS_SABONETE, preco:12.00},
   {id:"kit", cat:"Kits presente", linha:"Kit presente", nome:"Monte seu kit",
    desc:"Escolha as velas, os sabonetes e as essências que quiser. Pode ir em embalagem para presente.",
    ilustr:"kit", novo:true, abreKit:true, aromas:[], preco:null},
@@ -573,7 +583,7 @@ const KIT = [
    dica:"Escolha um ou mais sabonetes e a essência de cada um.",
    opcoes:[
      {id:"sabonete", nome:"Sabonete artesanal", sub:"Glicerinado, com sementes esfoliantes.",
-      foto:"img/sabonete-morango.jpg", aromas:["Maracujá","Morango","Flor de Cerejeira","Masculino"], preco:9.99},
+      foto:"img/sabonete-morango.jpg", aromas:ESS_SABONETE, preco:9.99},
    ]},
   {id:"difusor", titulo:"Difusor", plural:"difusores", semTexto:"Não quero difusor",
    dica:"Perfuma o ambiente por semanas, sem chama.",
@@ -591,9 +601,9 @@ const KIT_SAB = [
    dica:"Escolha quantos quiser, de cada aroma. Vai num saquinho de organza com laço.",
    opcoes:[
      {id:"sabonete", nome:"Sabonete artesanal", sub:"Glicerinado, com sementes esfoliantes.",
-      foto:"img/sabonete-morango.jpg", aromas:["Maracujá","Morango","Flor de Cerejeira","Masculino"], preco:9.99},
+      foto:"img/sabonete-morango.jpg", aromas:ESS_SABONETE, preco:9.99},
      {id:"massageador", nome:"Sabonete massageador", sub:"Com bolinhas que massageiam a pele.",
-      foto:"img/sabonete-massageador.jpg", aromas:["Maracujá","Morango","Flor de Cerejeira","Masculino"], preco:12.00},
+      foto:"img/sabonete-massageador.jpg", aromas:ESS_SABONETE, preco:12.00},
    ]},
 ];
 const MODOS = {
