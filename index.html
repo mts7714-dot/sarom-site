@@ -124,6 +124,31 @@
   footer a{color:var(--marrom2)}
   footer small{color:var(--suave)!important}
 
+  /* +opções no card e página do produto */
+  .aromas .mais{border:1px dashed var(--dourado);background:transparent;color:var(--marrom);border-radius:999px;padding:5px 12px;font:500 13.5px Jost,sans-serif;text-decoration:none}
+  .aromas .mais:hover{background:#F6E7CF}
+  .pagina{position:fixed;inset:0;z-index:40;background:var(--creme);overflow-y:auto}
+  .pagina[hidden]{display:none}
+  .pagina .pg-topo{position:sticky;top:0;z-index:2;background:#FFF4CC;border-bottom:1px solid var(--linha)}
+  .pagina .pg-topo .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .pagina .voltar{background:none;border:0;color:var(--marrom);font:500 15px Jost,sans-serif;cursor:pointer;padding:8px 0}
+  .pg{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding-top:32px;padding-bottom:120px;align-items:start}
+  .pg .foto{border-radius:18px;overflow:hidden;background:var(--creme2);aspect-ratio:1/1}
+  .pg .foto img,.pg .foto svg{width:100%;height:100%;object-fit:cover}
+  .pg .linha{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--salvia)}
+  .pg h2{font-size:38px;margin:6px 0 10px}
+  .pg .desc{color:var(--suave);margin:0 0 14px}
+  .pg .preco{font-size:24px;font-weight:500;color:var(--marrom);margin:0 0 18px}
+  .pg .rotulo{display:block;margin:0 0 8px}
+  .pg .aromas button{padding:7px 14px;font-size:14.5px}
+  .pg .nota{margin:10px 0 18px;color:var(--suave);font-size:14px;min-height:20px}
+  .pg textarea{width:100%;min-height:84px;border:1px solid var(--linha);border-radius:12px;padding:10px 12px;font:15px Jost,sans-serif;background:var(--branco);color:var(--texto);resize:vertical}
+  .pg .compra{display:flex;gap:12px;align-items:center;margin-top:18px}
+  .pg .compra .botao{flex:1;justify-content:center}
+  .pg .qtd{display:inline-flex;align-items:center;gap:12px;border:1px solid var(--linha);border-radius:999px;padding:4px 6px;background:var(--branco)}
+  .pg .qtd button{width:34px;height:34px;border-radius:50%;border:1px solid var(--linha);background:var(--creme);color:var(--marrom);font-size:18px;cursor:pointer}
+  @media (max-width:760px){ .pg{grid-template-columns:1fr;gap:20px;padding-top:16px} .pg>*{min-width:0} .pg .foto{aspect-ratio:4/3} .pg h2{font-size:30px} }
+
   /* lista de pedido */
   .duvida-btn{position:fixed;right:16px;bottom:16px;z-index:31;display:inline-flex;align-items:center;gap:10px;background:var(--branco);color:var(--marrom);border:1px solid var(--dourado);border-radius:999px;padding:8px 18px 8px 8px;text-decoration:none;box-shadow:0 6px 20px rgba(60,35,20,.18);font:500 14.5px/1.2 Jost,sans-serif;transition:transform .2s}
   .duvida-btn:hover{transform:translateY(-2px)}
@@ -458,6 +483,14 @@
   </form>
 </dialog>
 
+<div class="pagina" id="pagina-produto" hidden aria-label="Detalhes do produto">
+  <div class="pg-topo"><div class="wrap">
+    <button class="voltar" type="button" id="pg-voltar">← Voltar ao catálogo</button>
+    <img src="img/marca-v2.jpg" alt="SAROM" style="height:34px;width:auto">
+  </div></div>
+  <div class="wrap pg" id="pg"></div>
+</div>
+
 <dialog id="dlg">
   <div class="dlg">
     <h3>Minha lista</h3>
@@ -507,6 +540,7 @@ const ESSENCIAS = {
 
 /* Essências dos sabonetes (usadas no massageador, no kit lembrancinha e nos kits).
    Difusor e home spray vão usar estas mesmas quando chegarem as fotos. */
+const ESS_DESTAQUE = ["Flor de Cerejeira","Maracujá","Morango","Lavanda"];   // as 4 que aparecem no card; o resto fica em "+ opções"
 const ESS_SABONETE = ["Flor de Cerejeira","Maracujá","Morango","Maçã com Canela","Peony Garden","Camomila",
   "Sweet Vanilla","Capim-Limão","Limão Siciliano","Lavanda","Bambu","Masculino"];
 
@@ -669,6 +703,15 @@ function escolherFiltro(c){
   if(typeof barraKit==="function") barraKit();
 }
 
+const visiveis = p => p.aromas.length<=4 ? p.aromas : ESS_DESTAQUE.filter(a=>p.aromas.includes(a)).concat(p.aromas.filter(a=>!ESS_DESTAQUE.includes(a))).slice(0,4);
+function adicionar(p, a, qtd, obs){
+  obs = (obs||"").trim();
+  const it = lista.find(x=>x.id===p.id && x.aroma===a && (x.obs||"")===obs);
+  const g = p.linha.match(/\d+ g/); const nome = p.nome + (g ? " · " + g[0] : "");
+  it ? it.qtd += qtd : lista.push({id:p.id,nome,aroma:a,qtd,obs});
+  salvar(); atualizarLista(); aviso(`${nome} adicionado`);
+}
+
 function desenharProdutos(){
   const itens = PRODUTOS.filter(p=>filtro==="Todos"||p.cat===filtro);
   $("#grade").innerHTML = itens.map(p=>`
@@ -684,7 +727,7 @@ function desenharProdutos(){
         ${p.ilustr ? `<span class="aviso-ilustr">Imagem ilustrativa</span>` : ""}
         <div class="base">
         ${p.aromas.length ? `<span class="rotulo">${p.aromas.length>1?"Escolha o aroma":"Aroma"}</span>
-        <div class="aromas">${p.aromas.map((a,i)=>`<button aria-pressed="${i===0}" data-a="${a}">${a}</button>`).join("")}</div>` : ""}
+        <div class="aromas">${visiveis(p).map((a,i)=>`<button aria-pressed="${i===0}" data-a="${a}">${a}</button>`).join("")}${p.aromas.length>4?`<a class="mais" href="#produto/${p.id}">+ ${p.aromas.length-4} opções</a>`:""}</div>` : ""}
         <span class="preco">${p.preco ? reais(p.preco) : p.abreKit ? (p.abreKit==="sabonetes" ? "Valor conforme os sabonetes" : "Valor conforme os itens") : "Consulte o valor"}</span>
         <div class="acoes">
           ${p.abreKit ? `<button class="botao" data-abrir-kit="${p.abreKit===true?"kit":p.abreKit}">Montar meu kit</button>` : p.breve
@@ -708,10 +751,7 @@ function desenharProdutos(){
     atualizarAvise();
     const add = card.querySelector("[data-add]");
     if(add) add.onclick = () => {
-      const a = aroma(); const it = lista.find(x=>x.id===p.id && x.aroma===a);
-      const g = p.linha.match(/\d+ g/); const nome = p.nome + (g ? " · " + g[0] : "");
-      it ? it.qtd++ : lista.push({id:p.id,nome,aroma:a,qtd:1});
-      salvar(); atualizarLista(); aviso(`${nome} adicionado`);
+      adicionar(p, aroma(), 1, "");
     };
   });
 }
@@ -723,7 +763,7 @@ function desenharEssencias(){
 
 function mensagem(){
   const preco = i => (PRODUTOS.find(p=>p.id===i.id)||{}).preco;
-  const linhas = lista.map(i=>`• ${i.qtd}x ${i.nome}${i.nome.includes(i.aroma)?"":` (${i.aroma})`}${preco(i)?` – ${reais(preco(i)*i.qtd)}`:""}`).join("\n");
+  const linhas = lista.map(i=>`• ${i.qtd}x ${i.nome}${i.nome.includes(i.aroma)?"":` (${i.aroma})`}${preco(i)?` – ${reais(preco(i)*i.qtd)}`:""}${i.obs?`\n   Obs.: ${i.obs}`:""}`).join("\n");
   const tudo = lista.every(i=>preco(i));
   const soma = lista.reduce((s,i)=>s+(preco(i)||0)*i.qtd,0);
   return `Olá! Vi o catálogo da SAROM e gostaria de fazer um pedido:\n\n${linhas}${tudo?`\n\nTotal dos produtos: ${reais(soma)}`:""}\n\nPode me passar o frete para o meu CEP e o prazo?`;
@@ -733,7 +773,7 @@ function atualizarLista(){
   $("#lista-btn").hidden = total===0;
   $("#lista-qtd").textContent = total;
   $("#itens").innerHTML = lista.length ? lista.map((i,k)=>`
-    <div class="item"><span>${i.nome}${i.nome.includes(i.aroma)?"":`<br><small style="color:var(--suave)">${i.aroma}</small>`}</span>
+    <div class="item"><span>${i.nome}${i.nome.includes(i.aroma)?"":`<br><small style="color:var(--suave)">${i.aroma}</small>`}${i.obs?`<br><small style="color:var(--suave)">Obs.: ${i.obs.replace(/</g,"&lt;")}</small>`:""}</span>
     <span class="qtd"><button data-k="${k}" data-d="-1" aria-label="Diminuir">−</button>${i.qtd}<button data-k="${k}" data-d="1" aria-label="Aumentar">+</button></span></div>`).join("")
     : `<p style="color:var(--suave)">Sua lista está vazia.</p>`;
   $("#itens").querySelectorAll("button").forEach(b=>b.onclick=()=>{
@@ -867,7 +907,47 @@ document.addEventListener("click", e => {
   e.preventDefault(); abrirKit(el.dataset.abrirKit || "kit");
   $("#produtos").scrollIntoView({behavior:"smooth"});
 });
-const abrirPeloLink = () => { if(location.hash==="#monte-seu-kit") setTimeout(()=>{ abrirKit("kit"); $("#produtos").scrollIntoView(); }, 0); };
+let veioDoCatalogo = false;
+function paginaProduto(id){
+  const p = PRODUTOS.find(x=>x.id===id);
+  const pg = $("#pagina-produto");
+  if(!p){ pg.hidden = true; document.body.style.overflow = ""; return; }
+  let qtd = 1, sel = visiveis(p)[0] || "";
+  const notas = a => ESSENCIAS[a] ? ESSENCIAS[a].notas : "";
+  $("#pg").innerHTML = `
+    <div class="foto">${p.ilustr ? ILUSTR[p.ilustr] : `<img src="${p.foto}" alt="${p.nome}"${p.pos?` style="object-position:${p.pos}"`:""}>`}</div>
+    <div>
+      <span class="linha">${p.linha}</span>
+      <h2>${p.nome}</h2>
+      <p class="desc">${p.desc}</p>
+      <p class="preco">${p.preco ? reais(p.preco) : "Consulte o valor"}</p>
+      <span class="rotulo">Escolha a essência (${p.aromas.length} opções)</span>
+      <div class="aromas">${p.aromas.map(a=>`<button aria-pressed="${a===sel}" data-a="${a}">${a}</button>`).join("")}</div>
+      <p class="nota" id="pg-nota">${notas(sel)}</p>
+      <label class="rotulo" for="pg-obs">Observações (opcional)</label>
+      <textarea id="pg-obs" maxlength="250" placeholder="Ex.: é para presente, recado para o cartão, data que precisa receber..."></textarea>
+      <div class="compra">
+        <span class="qtd"><button type="button" data-q="-1" aria-label="Diminuir">−</button><b id="pg-qtd">1</b><button type="button" data-q="1" aria-label="Aumentar">+</button></span>
+        <button class="botao" type="button" id="pg-add">Adicionar à lista</button>
+      </div>
+    </div>`;
+  $("#pg").querySelectorAll(".aromas button").forEach(b=>b.onclick=()=>{
+    sel = b.dataset.a;
+    $("#pg").querySelectorAll(".aromas button").forEach(x=>x.setAttribute("aria-pressed", x===b));
+    $("#pg-nota").textContent = notas(sel);
+  });
+  $("#pg").querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{ qtd = Math.max(1, qtd + +b.dataset.q); $("#pg-qtd").textContent = qtd; });
+  $("#pg-add").onclick = () => { adicionar(p, sel, qtd, $("#pg-obs").value); $("#pg-obs").value = ""; qtd = 1; $("#pg-qtd").textContent = 1; };
+  pg.hidden = false; pg.scrollTop = 0; document.body.style.overflow = "hidden";
+}
+$("#pg-voltar").onclick = () => { if(veioDoCatalogo) history.back(); else location.hash = "#produtos"; };
+document.addEventListener("click", e => { if(e.target.closest('a[href^="#produto/"]')) veioDoCatalogo = true; });
+const abrirPeloLink = () => {
+  const m = location.hash.match(/^#produto\/(.+)$/);
+  paginaProduto(m ? decodeURIComponent(m[1]) : null);
+  if(!m) veioDoCatalogo = false;
+  if(location.hash==="#monte-seu-kit") setTimeout(()=>{ abrirKit("kit"); $("#produtos").scrollIntoView(); }, 0);
+};
 abrirPeloLink(); window.addEventListener("hashchange", abrirPeloLink);
 
 let t; function aviso(txt){ const el=$("#toast"); el.textContent=txt; el.classList.add("on"); clearTimeout(t); t=setTimeout(()=>el.classList.remove("on"),1800); }
