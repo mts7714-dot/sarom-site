@@ -161,6 +161,22 @@
   .pix .teste{background:#FBE3C8;color:#7A3E00;border-radius:8px;padding:6px 10px;font-size:12.5px;margin-bottom:10px}
   .pix-abrir{width:100%;justify-content:center;margin-top:14px}
   .pix-abrir[hidden]{display:none}
+  .cupom{margin-top:14px}
+  .cupom-linha{display:flex;gap:8px}
+  .cupom-linha input{flex:1;min-width:0;border:1px solid var(--linha);border-radius:999px;padding:9px 14px;font:15px Jost,sans-serif;text-transform:uppercase;background:#fff;color:var(--texto)}
+  .cupom-linha .botao{padding:9px 16px}
+  .cupom-msg{margin:6px 4px 0;font-size:13.5px;color:var(--suave)}
+  .cupom-msg:empty{display:none}
+  .cupom-msg.ok{color:#2E7D4F}.cupom-msg.erro{color:#A33A2A}
+  .progresso{margin-top:14px;background:var(--creme);border:1px solid var(--linha);border-radius:12px;padding:10px 12px}
+  .progresso[hidden]{display:none}
+  .progresso p{margin:0 0 6px;font-size:14px;color:var(--marrom)}
+  .progresso .barra{height:8px;border-radius:999px;background:#EFE3C8;overflow:hidden}
+  .progresso .barra i{display:block;height:100%;background:var(--dourado);border-radius:999px;transition:width .3s}
+  .progresso.ok .barra i{background:#2E9E5B}
+  .resumo{margin-top:12px;font-size:14.5px}
+  .resumo div{display:flex;justify-content:space-between;padding:2px 0;color:var(--suave)}
+  .resumo .desc{color:#2E7D4F}
   .entrega{margin-top:14px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
   .entrega[hidden]{display:none}
   .entrega label{display:flex;gap:8px;align-items:center;cursor:pointer}
@@ -387,12 +403,12 @@
       <div class="titulo"><h2>Como comprar</h2><div class="enfeite"></div></div>
       <div class="passos">
         <div class="passo"><h3>Escolha</h3><p>Veja os produtos, escolha o aroma e toque em “Adicionar”. Pode montar uma lista com vários itens.</p></div>
-        <div class="passo"><h3>Envie pelo WhatsApp</h3><p>Sua lista vai pronta, com os valores, para o nosso WhatsApp. Lá calculamos o frete e confirmamos o prazo.</p></div>
+        <div class="passo"><h3>Envie pelo WhatsApp</h3><p>Sua lista vai pronta, com os valores, para o nosso WhatsApp. Lá confirmamos o endereço e o prazo.</p></div>
         <div class="passo"><h3>Receba</h3><p>Entregamos em São Paulo e região, ou você retira com a gente. Pagamento por Pix ou cartão.</p></div>
       </div>
       <div class="infos">
         <div class="info-box"><div class="ic">📍</div><h4>Onde entregamos</h4><p>São Paulo capital e região.</p></div>
-        <div class="info-box"><div class="ic">🚚</div><h4>Frete</h4><p>Calculado conforme o seu CEP ou localização. Informamos o valor no WhatsApp antes de fechar.</p></div>
+        <div class="info-box"><div class="ic">🚚</div><h4>Frete</h4><p>R$ 4,00 fixo em São Paulo e região. Grátis nas compras a partir de R$ 64,99.</p></div>
         <div class="info-box"><div class="ic">🤝</div><h4>Retirada</h4><p>Também dá para retirar, sem frete. Combinamos o local e o horário.</p></div>
         <div class="info-box"><div class="ic">💳</div><h4>Pagamento</h4><p>Pix ou cartão.</p></div>
       </div>
@@ -434,7 +450,7 @@
             <li>Uso externo. Guarde em local fresco e sem sol direto.</li>
           </ul></details>
         <details><summary>Vocês entregam onde? Quanto custa o frete?</summary>
-          <p>Entregamos em São Paulo capital e região. O frete é calculado pelo seu CEP ou localização, e passamos o valor no WhatsApp antes de você confirmar. Se preferir, pode retirar sem frete.</p></details>
+          <p>Entregamos em São Paulo capital e região. O frete é fixo: R$ 4,00, e fica grátis nas compras a partir de R$ 64,99. Se preferir, pode retirar sem frete.</p></details>
         <details><summary>Quais as formas de pagamento?</summary>
           <p>Pix ou cartão. Combinamos tudo pelo WhatsApp.</p></details>
         <details><summary>Qual o prazo?</summary>
@@ -512,10 +528,16 @@
   <div class="dlg">
     <h3>Minha lista</h3>
     <div id="itens"></div>
+    <div class="cupom">
+      <div class="cupom-linha"><input id="cupom-cod" placeholder="Cupom de desconto" autocomplete="off" aria-label="Cupom de desconto"><button class="botao claro" type="button" id="cupom-aplicar">Aplicar</button></div>
+      <p class="cupom-msg" id="cupom-msg"></p>
+    </div>
     <div class="entrega" id="entrega" hidden>
       <label><input type="radio" name="entrega" value="entrega" checked> <span id="entrega-txt">Entrega</span></label>
       <label><input type="radio" name="entrega" value="retirada"> Retirar com a gente (sem frete)</label>
     </div>
+    <div class="progresso" id="progresso" hidden><p id="progresso-txt"></p><div class="barra"><i id="progresso-barra"></i></div></div>
+    <div class="resumo" id="resumo"></div>
     <p id="lista-total" style="text-align:right;font-weight:500;color:var(--marrom);margin:12px 0 0"></p>
     <button class="botao claro pix-abrir" type="button" id="pix-abrir" hidden>Pagar com Pix</button>
     <div class="pix" id="pix" hidden>
@@ -558,7 +580,20 @@ const PIX = { chave: "", nome: "SAROM", cidade: "SAO PAULO" };
 /* ===== FRETE FIXO =====
    valor: frete fixo para entrega em São Paulo e região (ex.: 10.00). null = frete calculado no WhatsApp.
    Com valor definido, a lista mostra "Entrega" ou "Retirar" e o Pix já cobra produtos + frete. */
-const FRETE = { valor: null, onde: "São Paulo e região" };
+const FRETE = { valor: 4.00, gratisAcima: 64.99, onde: "São Paulo e região" };
+
+/* ===== CUPONS =====
+   Para criar um cupom novo, copie uma linha e troque os campos:
+   codigo: o que o cliente digita (maiúsculas, sem espaço)
+   tipo: "porcento" (desconto em %), "reais" (desconto em R$) ou "frete" (frete grátis)
+   valor: quanto de desconto (10 = 10% ou R$ 10). Para "frete" pode deixar 0.
+   minimo: valor mínimo em produtos para valer (0 = sem mínimo)
+   validoAte: último dia que vale, "AAAA-MM-DD" ("" = sem data)
+   texto: o que aparece para o cliente
+   primeiraCompra: true = avisa que é só na primeira compra (a gente confere no WhatsApp) */
+const CUPONS = [
+  {codigo:"BEMVINDO10", tipo:"porcento", valor:10, minimo:0, validoAte:"", texto:"10% de desconto na primeira compra", primeiraCompra:true},
+];
 
 /* Essências (aparecem na seção "Nossas essências") */
 const ESSENCIAS = {
@@ -803,17 +838,45 @@ function desenharEssencias(){
     <div class="ess"><div class="bola" style="background:${e.cor}"></div><h3>${n}</h3><p>${e.notas}</p><small>${e.em.toUpperCase()}</small></div>`).join("");
 }
 
+/* ----- cupom e totais ----- */
+let cupomAtual = ""; try { cupomAtual = localStorage.getItem("sarom-cupom") || ""; } catch(e) {}
+const hojeISO = () => new Date().toISOString().slice(0,10);
+function acharCupom(cod, soma){
+  const c = CUPONS.find(x=>x.codigo.toUpperCase()===cod.trim().toUpperCase());
+  if(!c) return {erro:"Cupom não encontrado."};
+  if(c.validoAte && hojeISO() > c.validoAte) return {erro:"Este cupom expirou."};
+  if(c.minimo && soma < c.minimo) return {erro:`Este cupom vale para compras a partir de ${reais(c.minimo)} em produtos.`};
+  return {c};
+}
+function calcular(){
+  const pr = i => (PRODUTOS.find(p=>p.id===i.id)||{}).preco;
+  const temValor = !!lista.length && lista.every(pr);
+  const soma = lista.reduce((s,i)=>s+(pr(i)||0)*i.qtd,0);
+  const r = cupomAtual ? acharCupom(cupomAtual, soma) : {};
+  const c = r.erro ? null : r.c;
+  let desconto = 0;
+  if(c && c.tipo==="porcento") desconto = Math.round(soma*c.valor)/100;
+  if(c && c.tipo==="reais") desconto = Math.min(c.valor, soma);
+  const produtos = soma - desconto;
+  const fixo = FRETE.valor != null, ret = retirada();
+  const gratis = fixo && ((FRETE.gratisAcima!=null && produtos >= FRETE.gratisAcima) || !!(c && c.tipo==="frete"));
+  const frete = fixo && !ret && !gratis ? FRETE.valor : 0;
+  return {temValor, soma, desconto, produtos, cupom:c, erroCupom:r.erro, fixo, ret, gratis, frete, total: produtos + frete};
+}
+
 function mensagem(){
   const preco = i => (PRODUTOS.find(p=>p.id===i.id)||{}).preco;
   const linhas = lista.map(i=>`• ${i.qtd}x ${i.nome}${i.nome.includes(i.aroma)?"":` (${i.aroma})`}${preco(i)?` – ${reais(preco(i)*i.qtd)}`:""}${i.obs?`\n   Obs.: ${i.obs}`:""}`).join("\n");
-  const tudo = lista.every(i=>preco(i));
-  const soma = lista.reduce((s,i)=>s+(preco(i)||0)*i.qtd,0);
-  const fixo = FRETE.valor != null, ret = retirada(), frete = fixo && !ret ? FRETE.valor : 0;
-  const totais = !tudo ? "" : fixo
-    ? `\n\nProdutos: ${reais(soma)}\n${ret ? "Retirada (sem frete)" : `Frete: ${reais(frete)}`}\nTotal: ${reais(soma+frete)}`
-    : `\n\nTotal dos produtos: ${reais(soma)}`;
-  const pix = pagarPix && tudo ? `\n\nVou pagar pelo Pix do site (${reais(soma+frete)}) e envio o comprovante aqui.` : "";
-  const fim = !fixo ? "Pode me passar o frete para o meu CEP e o prazo?" : ret ? "Quero retirar. Pode me passar o local e o horário?" : "Vou mandar o endereço de entrega. Qual o prazo?";
+  const k = calcular();
+  let totais = "";
+  if(k.temValor){
+    totais = `\n\nProdutos: ${reais(k.soma)}`;
+    if(k.cupom) totais += `\nCupom ${k.cupom.codigo}${k.cupom.primeiraCompra?" (primeira compra)":""}: ${k.cupom.tipo==="frete" ? "frete grátis" : "− "+reais(k.desconto)}`;
+    if(k.fixo) totais += `\n${k.ret ? "Retirada (sem frete)" : k.gratis ? "Frete: grátis" : `Frete: ${reais(k.frete)}`}\nTotal: ${reais(k.total)}`;
+    else totais += `\nTotal dos produtos: ${reais(k.produtos)}`;
+  }
+  const pix = pagarPix && k.temValor ? `\n\nVou pagar pelo Pix do site (${reais(k.total)}) e envio o comprovante aqui.` : "";
+  const fim = !k.fixo ? "Pode me passar o frete para o meu CEP e o prazo?" : k.ret ? "Quero retirar. Pode me passar o local e o horário?" : "Vou mandar o endereço de entrega. Qual o prazo?";
   return `Olá! Vi o catálogo da SAROM e gostaria de fazer um pedido:\n\n${linhas}${totais}${pix}\n\n${fim}`;
 }
 /* ----- Pix (BR Code estático, padrão do Banco Central) ----- */
@@ -840,6 +903,8 @@ function desenharPix(valor){
   $("#pix-valor").textContent = reais(valor);
   $("#pix-teste").hidden = !!PIX.chave;
 }
+$("#cupom-aplicar").onclick = () => { cupomAtual = $("#cupom-cod").value.trim().toUpperCase(); try { localStorage.setItem("sarom-cupom", cupomAtual); } catch(e) {} $("#cupom-cod").blur(); atualizarLista(); };
+$("#cupom-cod").onkeydown = e => { if(e.key==="Enter"){ e.preventDefault(); $("#cupom-aplicar").click(); } };
 $("#pix-abrir").onclick = () => { pagarPix = true; atualizarLista(); $("#pix").scrollIntoView({behavior:"smooth", block:"nearest"}); };
 $("#pix-copiar").onclick = () => { const t = $("#pix-codigo"); t.select();
   (navigator.clipboard ? navigator.clipboard.writeText(t.value) : Promise.reject()).then(()=>aviso("Código Pix copiado"), ()=>{ document.execCommand("copy"); aviso("Código Pix copiado"); }); };
@@ -858,19 +923,31 @@ function atualizarLista(){
     salvar(); atualizarLista();
   });
   $("#enviar").href = zapLink(mensagem());
-  const pr = i => (PRODUTOS.find(p=>p.id===i.id)||{}).preco;
-  const temValor = lista.length && lista.every(pr), soma = lista.reduce((s,i)=>s+(pr(i)||0)*i.qtd,0);
-  const fixo = FRETE.valor != null, frete = fixo && !retirada() ? FRETE.valor : 0;
-  $("#entrega").hidden = !(fixo && lista.length);
-  $("#entrega-txt").textContent = fixo ? `Entrega em ${FRETE.onde} (frete ${reais(FRETE.valor)})` : "";
-  $("#lista-total").textContent = !temValor ? "" : !fixo ? "Total: " + reais(soma) + " + frete conforme o CEP"
-    : `Total: ${reais(soma+frete)}` + (frete ? ` (produtos ${reais(soma)} + frete ${reais(frete)})` : "");
-  if(!temValor) pagarPix = false;
-  $("#pix-abrir").hidden = !temValor || pagarPix;
-  $("#pix").hidden = !(temValor && pagarPix);
-  $("#pix-explica").textContent = !fixo ? "Valor dos produtos. O frete é combinado no WhatsApp e pago à parte. Depois de pagar, envie o pedido e o comprovante no WhatsApp."
-    : (frete ? "Produtos + frete." : "Produtos, com retirada sem frete.") + " Depois de pagar, envie o pedido e o comprovante no WhatsApp.";
-  if(temValor && pagarPix) desenharPix(soma+frete);
+  const k = calcular();
+  $("#entrega").hidden = !(k.fixo && lista.length);
+  $("#entrega-txt").textContent = k.fixo ? `Entrega em ${FRETE.onde} (frete ${reais(FRETE.valor)}${FRETE.gratisAcima!=null?`, grátis a partir de ${reais(FRETE.gratisAcima)}`:""})` : "";
+  const msg = $("#cupom-msg");
+  if(document.activeElement !== $("#cupom-cod")) $("#cupom-cod").value = cupomAtual;
+  msg.className = "cupom-msg" + (k.cupom ? " ok" : k.erroCupom ? " erro" : "");
+  msg.textContent = !lista.length ? "" : k.cupom ? `Cupom ${k.cupom.codigo} aplicado: ${k.cupom.texto}.${k.cupom.primeiraCompra?" Válido só na primeira compra.":""}` : (k.erroCupom || "");
+  const mostraBarra = k.temValor && k.fixo && !k.ret && FRETE.gratisAcima!=null && !(k.cupom && k.cupom.tipo==="frete");
+  $("#progresso").hidden = !mostraBarra;
+  if(mostraBarra){
+    const falta = Math.max(0, Math.round((FRETE.gratisAcima - k.produtos)*100)/100);
+    $("#progresso").classList.toggle("ok", falta===0);
+    $("#progresso-txt").textContent = falta===0 ? "Oba! Você ganhou frete grátis." : `Faltam ${reais(falta)} para o frete grátis`;
+    $("#progresso-barra").style.width = Math.min(100, k.produtos/FRETE.gratisAcima*100) + "%";
+  }
+  $("#resumo").innerHTML = !k.temValor ? "" : `<div><span>Produtos</span><span>${reais(k.soma)}</span></div>`
+    + (k.cupom ? `<div class="desc"><span>Cupom ${k.cupom.codigo}</span><span>${k.cupom.tipo==="frete" ? "frete grátis" : "− "+reais(k.desconto)}</span></div>` : "")
+    + (k.fixo ? `<div><span>Frete</span><span>${k.ret ? "retirada" : k.gratis ? "grátis" : reais(k.frete)}</span></div>` : "");
+  $("#lista-total").textContent = !k.temValor ? "" : k.fixo ? `Total: ${reais(k.total)}` : `Total: ${reais(k.produtos)} + frete conforme o CEP`;
+  if(!k.temValor) pagarPix = false;
+  $("#pix-abrir").hidden = !k.temValor || pagarPix;
+  $("#pix").hidden = !(k.temValor && pagarPix);
+  $("#pix-explica").textContent = !k.fixo ? "Valor dos produtos. O frete é combinado no WhatsApp e pago à parte. Depois de pagar, envie o pedido e o comprovante no WhatsApp."
+    : (k.ret ? "Produtos, com retirada sem frete." : k.frete ? "Produtos + frete." : "Produtos, com frete grátis.") + (k.cupom ? " Desconto do cupom já aplicado." : "") + " Depois de pagar, envie o pedido e o comprovante no WhatsApp.";
+  if(k.temValor && pagarPix) desenharPix(k.total);
 }
 /* ----- Monte seu kit ----- */
 const kitVazio = () => ({qtd:{}, sem:{}, presente:false, cartaoOn:false, cartao:""});
