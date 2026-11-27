@@ -124,6 +124,64 @@
   footer a{color:var(--marrom2)}
   footer small{color:var(--suave)!important}
 
+  /* +opções no card e página do produto */
+  .aromas .mais{border:1px dashed var(--dourado);background:transparent;color:var(--marrom);border-radius:999px;padding:5px 12px;font:500 13.5px Jost,sans-serif;text-decoration:none}
+  .aromas .mais:hover{background:#F6E7CF}
+  .pagina{position:fixed;inset:0;z-index:40;background:var(--creme);overflow-y:auto}
+  .pagina[hidden]{display:none}
+  .pagina .pg-topo{position:sticky;top:0;z-index:2;background:#FFF4CC;border-bottom:1px solid var(--linha)}
+  .pagina .pg-topo .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .pagina .voltar{background:none;border:0;color:var(--marrom);font:500 15px Jost,sans-serif;cursor:pointer;padding:8px 0}
+  .pg{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding-top:32px;padding-bottom:120px;align-items:start}
+  .pg .foto{border-radius:18px;overflow:hidden;background:var(--creme2);aspect-ratio:1/1}
+  .pg .foto img,.pg .foto svg{width:100%;height:100%;object-fit:cover}
+  .pg .linha{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--salvia)}
+  .pg h2{font-size:38px;margin:6px 0 10px}
+  .pg .desc{color:var(--suave);margin:0 0 14px}
+  .pg .preco{font-size:24px;font-weight:500;color:var(--marrom);margin:0 0 18px}
+  .pg .rotulo{display:block;margin:0 0 8px}
+  .pg .aromas button{padding:7px 14px;font-size:14.5px}
+  .pg .nota{margin:10px 0 18px;color:var(--suave);font-size:14px;min-height:20px}
+  .pg textarea{width:100%;min-height:84px;border:1px solid var(--linha);border-radius:12px;padding:10px 12px;font:15px Jost,sans-serif;background:var(--branco);color:var(--texto);resize:vertical}
+  .pg .compra{display:flex;gap:12px;align-items:center;margin-top:18px}
+  .pg .compra .botao{flex:1;justify-content:center}
+  .pg .qtd{display:inline-flex;align-items:center;gap:12px;border:1px solid var(--linha);border-radius:999px;padding:4px 6px;background:var(--branco)}
+  .pg .qtd button{width:34px;height:34px;border-radius:50%;border:1px solid var(--linha);background:var(--creme);color:var(--marrom);font-size:18px;cursor:pointer}
+  @media (max-width:760px){ .pg{grid-template-columns:1fr;gap:20px;padding-top:16px} .pg>*{min-width:0} .pg .foto{aspect-ratio:4/3} .pg h2{font-size:30px} }
+
+  /* Pix */
+  .pix{margin-top:16px;border:1px solid var(--linha);border-radius:14px;padding:14px;background:var(--creme)}
+  .pix[hidden]{display:none}
+  .pix h4{margin:0 0 4px;font:500 16px Jost,sans-serif;color:var(--marrom)}
+  .pix p{margin:0 0 10px;font-size:13.5px;color:var(--suave)}
+  .pix .qr{display:flex;justify-content:center;background:#fff;border-radius:10px;padding:10px;margin:0 auto 10px;width:max-content}
+  .pix .qr img{width:190px;height:190px;image-rendering:pixelated}
+  .pix textarea{width:100%;height:64px;font:12px monospace;border:1px solid var(--linha);border-radius:10px;padding:8px;resize:none;background:#fff;color:var(--texto)}
+  .pix .copiar{width:100%;justify-content:center;margin-top:8px}
+  .pix .teste{background:#FBE3C8;color:#7A3E00;border-radius:8px;padding:6px 10px;font-size:12.5px;margin-bottom:10px}
+  .pix-abrir{width:100%;justify-content:center;margin-top:14px}
+  .pix-abrir[hidden]{display:none}
+  .cupom{margin-top:14px}
+  .cupom-linha{display:flex;gap:8px}
+  .cupom-linha input{flex:1;min-width:0;border:1px solid var(--linha);border-radius:999px;padding:9px 14px;font:15px Jost,sans-serif;text-transform:uppercase;background:#fff;color:var(--texto)}
+  .cupom-linha .botao{padding:9px 16px}
+  .cupom-msg{margin:6px 4px 0;font-size:13.5px;color:var(--suave)}
+  .cupom-msg:empty{display:none}
+  .cupom-msg.ok{color:#2E7D4F}.cupom-msg.erro{color:#A33A2A}
+  .progresso{margin-top:14px;background:var(--creme);border:1px solid var(--linha);border-radius:12px;padding:10px 12px}
+  .progresso[hidden]{display:none}
+  .progresso p{margin:0 0 6px;font-size:14px;color:var(--marrom)}
+  .progresso .barra{height:8px;border-radius:999px;background:#EFE3C8;overflow:hidden}
+  .progresso .barra i{display:block;height:100%;background:var(--dourado);border-radius:999px;transition:width .3s}
+  .progresso.ok .barra i{background:#2E9E5B}
+  .resumo{margin-top:12px;font-size:14.5px}
+  .resumo div{display:flex;justify-content:space-between;padding:2px 0;color:var(--suave)}
+  .resumo .desc{color:#2E7D4F}
+  .entrega{margin-top:14px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+  .entrega[hidden]{display:none}
+  .entrega label{display:flex;gap:8px;align-items:center;cursor:pointer}
+  .entrega input{accent-color:var(--marrom)}
+
   /* lista de pedido */
   .duvida-btn{position:fixed;right:16px;bottom:16px;z-index:31;display:inline-flex;align-items:center;gap:10px;background:var(--branco);color:var(--marrom);border:1px solid var(--dourado);border-radius:999px;padding:8px 18px 8px 8px;text-decoration:none;box-shadow:0 6px 20px rgba(60,35,20,.18);font:500 14.5px/1.2 Jost,sans-serif;transition:transform .2s}
   .duvida-btn:hover{transform:translateY(-2px)}
@@ -345,12 +403,12 @@
       <div class="titulo"><h2>Como comprar</h2><div class="enfeite"></div></div>
       <div class="passos">
         <div class="passo"><h3>Escolha</h3><p>Veja os produtos, escolha o aroma e toque em “Adicionar”. Pode montar uma lista com vários itens.</p></div>
-        <div class="passo"><h3>Envie pelo WhatsApp</h3><p>Sua lista vai pronta, com os valores, para o nosso WhatsApp. Lá calculamos o frete e confirmamos o prazo.</p></div>
+        <div class="passo"><h3>Envie pelo WhatsApp</h3><p>Sua lista vai pronta, com os valores, para o nosso WhatsApp. Lá confirmamos o endereço e o prazo.</p></div>
         <div class="passo"><h3>Receba</h3><p>Entregamos em São Paulo e região, ou você retira com a gente. Pagamento por Pix ou cartão.</p></div>
       </div>
       <div class="infos">
         <div class="info-box"><div class="ic">📍</div><h4>Onde entregamos</h4><p>São Paulo capital e região.</p></div>
-        <div class="info-box"><div class="ic">🚚</div><h4>Frete</h4><p>Calculado conforme o seu CEP ou localização. Informamos o valor no WhatsApp antes de fechar.</p></div>
+        <div class="info-box"><div class="ic">🚚</div><h4>Frete</h4><p>R$ 4,00 fixo em São Paulo e região. Grátis nas compras a partir de R$ 64,99.</p></div>
         <div class="info-box"><div class="ic">🤝</div><h4>Retirada</h4><p>Também dá para retirar, sem frete. Combinamos o local e o horário.</p></div>
         <div class="info-box"><div class="ic">💳</div><h4>Pagamento</h4><p>Pix ou cartão.</p></div>
       </div>
@@ -392,7 +450,7 @@
             <li>Uso externo. Guarde em local fresco e sem sol direto.</li>
           </ul></details>
         <details><summary>Vocês entregam onde? Quanto custa o frete?</summary>
-          <p>Entregamos em São Paulo capital e região. O frete é calculado pelo seu CEP ou localização, e passamos o valor no WhatsApp antes de você confirmar. Se preferir, pode retirar sem frete.</p></details>
+          <p>Entregamos em São Paulo capital e região. O frete é fixo: R$ 4,00, e fica grátis nas compras a partir de R$ 64,99. Se preferir, pode retirar sem frete.</p></details>
         <details><summary>Quais as formas de pagamento?</summary>
           <p>Pix ou cartão. Combinamos tudo pelo WhatsApp.</p></details>
         <details><summary>Qual o prazo?</summary>
@@ -458,11 +516,38 @@
   </form>
 </dialog>
 
+<div class="pagina" id="pagina-produto" hidden aria-label="Detalhes do produto">
+  <div class="pg-topo"><div class="wrap">
+    <button class="voltar" type="button" id="pg-voltar">← Voltar ao catálogo</button>
+    <img src="img/marca-v2.jpg" alt="SAROM" style="height:34px;width:auto">
+  </div></div>
+  <div class="wrap pg" id="pg"></div>
+</div>
+
 <dialog id="dlg">
   <div class="dlg">
     <h3>Minha lista</h3>
     <div id="itens"></div>
+    <div class="cupom">
+      <div class="cupom-linha"><input id="cupom-cod" placeholder="Cupom de desconto" autocomplete="off" aria-label="Cupom de desconto"><button class="botao claro" type="button" id="cupom-aplicar">Aplicar</button></div>
+      <p class="cupom-msg" id="cupom-msg"></p>
+    </div>
+    <div class="entrega" id="entrega" hidden>
+      <label><input type="radio" name="entrega" value="entrega" checked> <span id="entrega-txt">Entrega</span></label>
+      <label><input type="radio" name="entrega" value="retirada"> Retirar com a gente (sem frete)</label>
+    </div>
+    <div class="progresso" id="progresso" hidden><p id="progresso-txt"></p><div class="barra"><i id="progresso-barra"></i></div></div>
+    <div class="resumo" id="resumo"></div>
     <p id="lista-total" style="text-align:right;font-weight:500;color:var(--marrom);margin:12px 0 0"></p>
+    <button class="botao claro pix-abrir" type="button" id="pix-abrir" hidden>Pagar com Pix</button>
+    <div class="pix" id="pix" hidden>
+      <div class="teste" id="pix-teste" hidden>Prévia: chave Pix ainda não configurada. Este QR code é só de exemplo e não recebe pagamento.</div>
+      <h4>Pix de <span id="pix-valor"></span></h4>
+      <p id="pix-explica"></p>
+      <div class="qr" id="pix-qr"></div>
+      <textarea id="pix-codigo" readonly aria-label="Pix copia e cola"></textarea>
+      <button class="botao claro copiar" type="button" id="pix-copiar">Copiar código Pix</button>
+    </div>
     <div class="rodape">
       <button class="botao claro" id="fechar">Continuar vendo</button>
       <a class="botao zap" id="enviar" href="#" target="_blank" rel="noopener">Enviar no WhatsApp</a>
@@ -471,6 +556,7 @@
 </dialog>
 <div class="toast" id="toast"></div>
 
+<script src="js/qrcode.js"></script>
 <script>
 /* =========================================================
    CONFIGURAÇÃO DA LOJA: troque aqui o número e o Instagram
@@ -485,20 +571,55 @@ const MURAL = {   // projeto Supabase "sarom-site". A chave abaixo é pública (
   chave: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNvc2Rqc3Nna2hleXRia3VjcGZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzODQ5ODAsImV4cCI6MjExMDk2MDk4MH0.BjIEkjAG82qvxMoJ2Zbe27v7Ye2C83VQVTrKTS_naMc"
 };
 
+/* ===== PIX =====
+   Chave Pix da conta (Nubank). Pode ser CPF, celular (+5511...), e-mail ou chave aleatória.
+   Enquanto "chave" estiver vazia, o site mostra um QR code de EXEMPLO com aviso (não recebe pagamento).
+   nome: nome do recebedor, sem acento, até 25 letras. cidade: sem acento, até 15 letras. */
+const PIX = { chave: "78c67c93-7b0a-460e-85f1-27318a55c910", nome: "SAROM", cidade: "SAO PAULO" };
+
+/* ===== FRETE FIXO =====
+   valor: frete fixo para entrega em São Paulo e região (ex.: 10.00). null = frete calculado no WhatsApp.
+   Com valor definido, a lista mostra "Entrega" ou "Retirar" e o Pix já cobra produtos + frete. */
+const FRETE = { valor: 4.00, gratisAcima: 64.99, onde: "São Paulo e região" };
+
+/* ===== CUPONS =====
+   Para criar um cupom novo, copie uma linha e troque os campos:
+   codigo: o que o cliente digita (maiúsculas, sem espaço)
+   tipo: "porcento" (desconto em %), "reais" (desconto em R$) ou "frete" (frete grátis)
+   valor: quanto de desconto (10 = 10% ou R$ 10). Para "frete" pode deixar 0.
+   minimo: valor mínimo em produtos para valer (0 = sem mínimo)
+   validoAte: último dia que vale, "AAAA-MM-DD" ("" = sem data)
+   texto: o que aparece para o cliente
+   primeiraCompra: true = avisa que é só na primeira compra (a gente confere no WhatsApp) */
+const CUPONS = [
+  {codigo:"BEMVINDO10", tipo:"porcento", valor:10, minimo:0, validoAte:"", texto:"10% de desconto na primeira compra", primeiraCompra:true},
+];
+
 /* Essências (aparecem na seção "Nossas essências") */
 const ESSENCIAS = {
+  "Flor de Cerejeira":  {cor:"#F4B9C8", notas:"Floral, suave e delicado.", em:"Sabonete"},
   "Maracujá":           {cor:"#D8CF3A", notas:"Frutado, tropical e alegre.", em:"Sabonete"},
   "Morango":            {cor:"#EE9A95", notas:"Doce, delicado e aconchegante.", em:"Sabonete"},
+  "Maçã com Canela":    {cor:"#C8643C", notas:"Doce e especiado, com cheiro de casa quentinha.", em:"Sabonete"},
+  "Peony Garden":       {cor:"#E7A3B8", notas:"Floral, romântico e delicado.", em:"Sabonete"},
+  "Camomila":           {cor:"#F1DC8A", notas:"Suave e calmante, ótima para relaxar.", em:"Sabonete"},
+  "Sweet Vanilla":      {cor:"#F0DDB4", notas:"Doce, cremoso e aconchegante.", em:"Sabonete"},
+  "Capim-Limão":        {cor:"#C9D3A2", notas:"Fresco, cítrico e revigorante.", em:"Sabonete e vela"},
+  "Limão Siciliano":    {cor:"#F2E66B", notas:"Cítrico, limpo e energizante.", em:"Sabonete"},
+  "Lavanda":            {cor:"#C7B8DC", notas:"Floral e calmante, ideal para relaxar.", em:"Sabonete"},
+  "Bambu":              {cor:"#B9C9A3", notas:"Verde, limpo e leve.", em:"Sabonete"},
+  "Masculino":          {cor:"#4A5468", notas:"Fresco e marcante, pensado para ele (For Men).", em:"Sabonete"},
   "Gengibre e Pimenta": {cor:"#EFE5CF", notas:"Quente, picante e marcante.", em:"Vela"},
   "Frutas Vermelhas":   {cor:"#F2A99A", notas:"Doce e vibrante, com notas de amora e framboesa.", em:"Vela"},
-  "Capim-Limão":        {cor:"#C9D3A2", notas:"Fresco, cítrico e revigorante.", em:"Vela"},
-  "Flor de Cerejeira":  {cor:"#F4B9C8", notas:"Floral, suave e delicado.", em:"Sabonete"},
-  "Masculino":          {cor:"#4A5468", notas:"Fresco e marcante, pensado para ele.", em:"Sabonete"},
-  "Chá Branco":         {cor:"#EDE8CF", notas:"Leve, limpo e relaxante.", em:"Vela"},
   "Mirra com Pimenta":  {cor:"#8DBF5A", notas:"Amadeirado, quente e envolvente.", em:"Vela"},
-  "Lavanda":            {cor:"#C7B8DC", notas:"Floral e calmante, ideal para relaxar.", em:"Em breve"},
-  "Bambu":              {cor:"#B9C9A3", notas:"Verde, limpo e leve.", em:"Em breve"},
+  "Chá Branco":         {cor:"#EDE8CF", notas:"Leve, limpo e relaxante.", em:"Vela"},
 };
+
+/* Essências dos sabonetes (usadas no massageador, no kit lembrancinha e nos kits).
+   Difusor e home spray vão usar estas mesmas quando chegarem as fotos. */
+const ESS_DESTAQUE = ["Flor de Cerejeira","Maracujá","Morango","Lavanda"];   // as 4 que aparecem no card; o resto fica em "+ opções"
+const ESS_SABONETE = ["Flor de Cerejeira","Maracujá","Morango","Maçã com Canela","Peony Garden","Camomila",
+  "Sweet Vanilla","Capim-Limão","Limão Siciliano","Lavanda","Bambu","Masculino"];
 
 /* Produtos. REGRAS:
    1) Um card para cada produto + aroma, cada um com a sua foto.
@@ -519,7 +640,7 @@ const PRODUTOS = [
    foto:"img/sabonete-masculino.jpg", pos:"50% 62%", aromas:["Masculino"], preco:9.99},
   {id:"sab-massageador", cat:"Sabonetes", linha:"Sabonete massageador", nome:"Sabonete Massageador",
    desc:"Formato com bolinhas que massageiam a pele durante o banho.",
-   foto:"img/sabonete-massageador.jpg", pos:"50% 62%", aromas:["Flor de Cerejeira"], preco:12.00},
+   foto:"img/sabonete-massageador.jpg", pos:"50% 62%", aromas:ESS_SABONETE, preco:12.00},
   {id:"sab-cerejeira", cat:"Sabonetes", linha:"Sabonete artesanal", nome:"Sabonete Flor de Cerejeira",
    desc:"Glicerinado, em barra, com aroma floral suave e delicado.",
    foto:"img/sabonete-flor-cerejeira.jpg", pos:"50% 62%", aromas:["Flor de Cerejeira"], preco:9.99},
@@ -545,11 +666,11 @@ const PRODUTOS = [
    desc:"Borrife em lençóis, travesseiros, sofá, almofadas, cortinas e tapetes, e deixe a casa toda perfumada. Aromas em breve.",
    ilustr:"spray", breve:true, aromas:[], preco:null},
   {id:"kit-sabonetes", cat:"Kits presente", linha:"Kit presente", nome:"Kit Sabonetes",
-   desc:"Você escolhe os sabonetes e os aromas (Maracujá, Morango, Flor de Cerejeira, Masculino ou o massageador). Vai num saquinho de organza com laço.",
+   desc:"Você escolhe os sabonetes (artesanal ou massageador) e as essências, entre 12 opções. Vai num saquinho de organza com laço.",
    foto:"img/kit-sabonetes.jpg", pos:"50% 55%", aromas:[], abreKit:"sabonetes", preco:null},
   {id:"kit-lembrancinha", cat:"Kits presente", linha:"Kit lembrancinha · 6 unidades", nome:"Kit Lembrancinha",
    desc:"6 mini sabonetes em formato de conchas e estrelas, num saquinho de organza. Ótimo para festas e lembrancinhas.",
-   foto:"img/kit-lembrancinha-mini-sabonetes.jpg", pos:"50% 70%", aromas:["Flor de Cerejeira"], preco:12.00},
+   foto:"img/kit-lembrancinha-mini-sabonetes.jpg", pos:"50% 70%", aromas:ESS_SABONETE, preco:12.00},
   {id:"kit", cat:"Kits presente", linha:"Kit presente", nome:"Monte seu kit",
    desc:"Escolha as velas, os sabonetes e as essências que quiser. Pode ir em embalagem para presente.",
    ilustr:"kit", novo:true, abreKit:true, aromas:[], preco:null},
@@ -573,7 +694,7 @@ const KIT = [
    dica:"Escolha um ou mais sabonetes e a essência de cada um.",
    opcoes:[
      {id:"sabonete", nome:"Sabonete artesanal", sub:"Glicerinado, com sementes esfoliantes.",
-      foto:"img/sabonete-morango.jpg", aromas:["Maracujá","Morango","Flor de Cerejeira","Masculino"], preco:9.99},
+      foto:"img/sabonete-morango.jpg", aromas:ESS_SABONETE, preco:9.99},
    ]},
   {id:"difusor", titulo:"Difusor", plural:"difusores", semTexto:"Não quero difusor",
    dica:"Perfuma o ambiente por semanas, sem chama.",
@@ -591,9 +712,9 @@ const KIT_SAB = [
    dica:"Escolha quantos quiser, de cada aroma. Vai num saquinho de organza com laço.",
    opcoes:[
      {id:"sabonete", nome:"Sabonete artesanal", sub:"Glicerinado, com sementes esfoliantes.",
-      foto:"img/sabonete-morango.jpg", aromas:["Maracujá","Morango","Flor de Cerejeira","Masculino"], preco:9.99},
+      foto:"img/sabonete-morango.jpg", aromas:ESS_SABONETE, preco:9.99},
      {id:"massageador", nome:"Sabonete massageador", sub:"Com bolinhas que massageiam a pele.",
-      foto:"img/sabonete-massageador.jpg", aromas:["Flor de Cerejeira"], preco:12.00},
+      foto:"img/sabonete-massageador.jpg", aromas:ESS_SABONETE, preco:12.00},
    ]},
 ];
 const MODOS = {
@@ -659,6 +780,15 @@ function escolherFiltro(c){
   if(typeof barraKit==="function") barraKit();
 }
 
+const visiveis = p => p.aromas.length<=4 ? p.aromas : ESS_DESTAQUE.filter(a=>p.aromas.includes(a)).concat(p.aromas.filter(a=>!ESS_DESTAQUE.includes(a))).slice(0,4);
+function adicionar(p, a, qtd, obs){
+  obs = (obs||"").trim();
+  const it = lista.find(x=>x.id===p.id && x.aroma===a && (x.obs||"")===obs);
+  const g = p.linha.match(/\d+ g/); const nome = p.nome + (g ? " · " + g[0] : "");
+  it ? it.qtd += qtd : lista.push({id:p.id,nome,aroma:a,qtd,obs});
+  salvar(); atualizarLista(); aviso(`${nome} adicionado`);
+}
+
 function desenharProdutos(){
   const itens = PRODUTOS.filter(p=>filtro==="Todos"||p.cat===filtro);
   $("#grade").innerHTML = itens.map(p=>`
@@ -674,7 +804,7 @@ function desenharProdutos(){
         ${p.ilustr ? `<span class="aviso-ilustr">Imagem ilustrativa</span>` : ""}
         <div class="base">
         ${p.aromas.length ? `<span class="rotulo">${p.aromas.length>1?"Escolha o aroma":"Aroma"}</span>
-        <div class="aromas">${p.aromas.map((a,i)=>`<button aria-pressed="${i===0}" data-a="${a}">${a}</button>`).join("")}</div>` : ""}
+        <div class="aromas">${visiveis(p).map((a,i)=>`<button aria-pressed="${i===0}" data-a="${a}">${a}</button>`).join("")}${p.aromas.length>4?`<a class="mais" href="#produto/${p.id}">+ ${p.aromas.length-4} opções</a>`:""}</div>` : ""}
         <span class="preco">${p.preco ? reais(p.preco) : p.abreKit ? (p.abreKit==="sabonetes" ? "Valor conforme os sabonetes" : "Valor conforme os itens") : "Consulte o valor"}</span>
         <div class="acoes">
           ${p.abreKit ? `<button class="botao" data-abrir-kit="${p.abreKit===true?"kit":p.abreKit}">Montar meu kit</button>` : p.breve
@@ -698,10 +828,7 @@ function desenharProdutos(){
     atualizarAvise();
     const add = card.querySelector("[data-add]");
     if(add) add.onclick = () => {
-      const a = aroma(); const it = lista.find(x=>x.id===p.id && x.aroma===a);
-      const g = p.linha.match(/\d+ g/); const nome = p.nome + (g ? " · " + g[0] : "");
-      it ? it.qtd++ : lista.push({id:p.id,nome,aroma:a,qtd:1});
-      salvar(); atualizarLista(); aviso(`${nome} adicionado`);
+      adicionar(p, aroma(), 1, "");
     };
   });
 }
@@ -711,19 +838,83 @@ function desenharEssencias(){
     <div class="ess"><div class="bola" style="background:${e.cor}"></div><h3>${n}</h3><p>${e.notas}</p><small>${e.em.toUpperCase()}</small></div>`).join("");
 }
 
+/* ----- cupom e totais ----- */
+let cupomAtual = ""; try { cupomAtual = localStorage.getItem("sarom-cupom") || ""; } catch(e) {}
+const hojeISO = () => new Date().toISOString().slice(0,10);
+function acharCupom(cod, soma){
+  const c = CUPONS.find(x=>x.codigo.toUpperCase()===cod.trim().toUpperCase());
+  if(!c) return {erro:"Cupom não encontrado."};
+  if(c.validoAte && hojeISO() > c.validoAte) return {erro:"Este cupom expirou."};
+  if(c.minimo && soma < c.minimo) return {erro:`Este cupom vale para compras a partir de ${reais(c.minimo)} em produtos.`};
+  return {c};
+}
+function calcular(){
+  const pr = i => (PRODUTOS.find(p=>p.id===i.id)||{}).preco;
+  const temValor = !!lista.length && lista.every(pr);
+  const soma = lista.reduce((s,i)=>s+(pr(i)||0)*i.qtd,0);
+  const r = cupomAtual ? acharCupom(cupomAtual, soma) : {};
+  const c = r.erro ? null : r.c;
+  let desconto = 0;
+  if(c && c.tipo==="porcento") desconto = Math.round(soma*c.valor)/100;
+  if(c && c.tipo==="reais") desconto = Math.min(c.valor, soma);
+  const produtos = soma - desconto;
+  const fixo = FRETE.valor != null, ret = retirada();
+  const gratis = fixo && ((FRETE.gratisAcima!=null && produtos >= FRETE.gratisAcima) || !!(c && c.tipo==="frete"));
+  const frete = fixo && !ret && !gratis ? FRETE.valor : 0;
+  return {temValor, soma, desconto, produtos, cupom:c, erroCupom:r.erro, fixo, ret, gratis, frete, total: produtos + frete};
+}
+
 function mensagem(){
   const preco = i => (PRODUTOS.find(p=>p.id===i.id)||{}).preco;
-  const linhas = lista.map(i=>`• ${i.qtd}x ${i.nome}${i.nome.includes(i.aroma)?"":` (${i.aroma})`}${preco(i)?` – ${reais(preco(i)*i.qtd)}`:""}`).join("\n");
-  const tudo = lista.every(i=>preco(i));
-  const soma = lista.reduce((s,i)=>s+(preco(i)||0)*i.qtd,0);
-  return `Olá! Vi o catálogo da SAROM e gostaria de fazer um pedido:\n\n${linhas}${tudo?`\n\nTotal dos produtos: ${reais(soma)}`:""}\n\nPode me passar o frete para o meu CEP e o prazo?`;
+  const linhas = lista.map(i=>`• ${i.qtd}x ${i.nome}${i.nome.includes(i.aroma)?"":` (${i.aroma})`}${preco(i)?` – ${reais(preco(i)*i.qtd)}`:""}${i.obs?`\n   Obs.: ${i.obs}`:""}`).join("\n");
+  const k = calcular();
+  let totais = "";
+  if(k.temValor){
+    totais = `\n\nProdutos: ${reais(k.soma)}`;
+    if(k.cupom) totais += `\nCupom ${k.cupom.codigo}${k.cupom.primeiraCompra?" (primeira compra)":""}: ${k.cupom.tipo==="frete" ? "frete grátis" : "− "+reais(k.desconto)}`;
+    if(k.fixo) totais += `\n${k.ret ? "Retirada (sem frete)" : k.gratis ? "Frete: grátis" : `Frete: ${reais(k.frete)}`}\nTotal: ${reais(k.total)}`;
+    else totais += `\nTotal dos produtos: ${reais(k.produtos)}`;
+  }
+  const pix = pagarPix && k.temValor ? `\n\nVou pagar pelo Pix do site (${reais(k.total)}) e envio o comprovante aqui.` : "";
+  const fim = !k.fixo ? "Pode me passar o frete para o meu CEP e o prazo?" : k.ret ? "Quero retirar. Pode me passar o local e o horário?" : "Vou mandar o endereço de entrega. Qual o prazo?";
+  return `Olá! Vi o catálogo da SAROM e gostaria de fazer um pedido:\n\n${linhas}${totais}${pix}\n\n${fim}`;
 }
+/* ----- Pix (BR Code estático, padrão do Banco Central) ----- */
+let pagarPix = false;
+const retirada = () => FRETE.valor != null && document.querySelector('input[name=entrega][value=retirada]').checked;
+document.querySelectorAll('input[name=entrega]').forEach(r=>r.onchange=()=>atualizarLista());
+const semAcento = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase();
+const campo = (id, v) => id + String(v.length).padStart(2,"0") + v;
+function crc16(t){ let c = 0xFFFF;
+  for(let i=0;i<t.length;i++){ c ^= t.charCodeAt(i) << 8; for(let j=0;j<8;j++) c = (c & 0x8000) ? ((c << 1) ^ 0x1021) & 0xFFFF : (c << 1) & 0xFFFF; }
+  return c.toString(16).toUpperCase().padStart(4,"0"); }
+function codigoPix(valor){
+  const chave = PIX.chave || "exemplo@sarom.com.br";
+  const s = campo("00","01") + campo("26", campo("00","br.gov.bcb.pix") + campo("01", chave)) + campo("52","0000") + campo("53","986")
+    + campo("54", valor.toFixed(2)) + campo("58","BR") + campo("59", semAcento(PIX.nome).slice(0,25)) + campo("60", semAcento(PIX.cidade).slice(0,15))
+    + campo("62", campo("05","***")) + "6304";
+  return s + crc16(s);
+}
+function desenharPix(valor){
+  const cod = codigoPix(valor);
+  const qr = qrcode(0, "M"); qr.addData(cod); qr.make();
+  $("#pix-qr").innerHTML = qr.createImgTag(6, 0);
+  $("#pix-codigo").value = cod;
+  $("#pix-valor").textContent = reais(valor);
+  $("#pix-teste").hidden = !!PIX.chave;
+}
+$("#cupom-aplicar").onclick = () => { cupomAtual = $("#cupom-cod").value.trim().toUpperCase(); try { localStorage.setItem("sarom-cupom", cupomAtual); } catch(e) {} $("#cupom-cod").blur(); atualizarLista(); };
+$("#cupom-cod").onkeydown = e => { if(e.key==="Enter"){ e.preventDefault(); $("#cupom-aplicar").click(); } };
+$("#pix-abrir").onclick = () => { pagarPix = true; atualizarLista(); $("#pix").scrollIntoView({behavior:"smooth", block:"nearest"}); };
+$("#pix-copiar").onclick = () => { const t = $("#pix-codigo"); t.select();
+  (navigator.clipboard ? navigator.clipboard.writeText(t.value) : Promise.reject()).then(()=>aviso("Código Pix copiado"), ()=>{ document.execCommand("copy"); aviso("Código Pix copiado"); }); };
+
 function atualizarLista(){
   const total = lista.reduce((s,i)=>s+i.qtd,0);
   $("#lista-btn").hidden = total===0;
   $("#lista-qtd").textContent = total;
   $("#itens").innerHTML = lista.length ? lista.map((i,k)=>`
-    <div class="item"><span>${i.nome}${i.nome.includes(i.aroma)?"":`<br><small style="color:var(--suave)">${i.aroma}</small>`}</span>
+    <div class="item"><span>${i.nome}${i.nome.includes(i.aroma)?"":`<br><small style="color:var(--suave)">${i.aroma}</small>`}${i.obs?`<br><small style="color:var(--suave)">Obs.: ${i.obs.replace(/</g,"&lt;")}</small>`:""}</span>
     <span class="qtd"><button data-k="${k}" data-d="-1" aria-label="Diminuir">−</button>${i.qtd}<button data-k="${k}" data-d="1" aria-label="Aumentar">+</button></span></div>`).join("")
     : `<p style="color:var(--suave)">Sua lista está vazia.</p>`;
   $("#itens").querySelectorAll("button").forEach(b=>b.onclick=()=>{
@@ -732,8 +923,31 @@ function atualizarLista(){
     salvar(); atualizarLista();
   });
   $("#enviar").href = zapLink(mensagem());
-  const pr = i => (PRODUTOS.find(p=>p.id===i.id)||{}).preco;
-  $("#lista-total").textContent = lista.length && lista.every(pr) ? "Total: " + reais(lista.reduce((s,i)=>s+pr(i)*i.qtd,0)) + " + frete conforme o CEP" : "";
+  const k = calcular();
+  $("#entrega").hidden = !(k.fixo && lista.length);
+  $("#entrega-txt").textContent = k.fixo ? `Entrega em ${FRETE.onde} (frete ${reais(FRETE.valor)}${FRETE.gratisAcima!=null?`, grátis a partir de ${reais(FRETE.gratisAcima)}`:""})` : "";
+  const msg = $("#cupom-msg");
+  if(document.activeElement !== $("#cupom-cod")) $("#cupom-cod").value = cupomAtual;
+  msg.className = "cupom-msg" + (k.cupom ? " ok" : k.erroCupom ? " erro" : "");
+  msg.textContent = !lista.length ? "" : k.cupom ? `Cupom ${k.cupom.codigo} aplicado: ${k.cupom.texto}.${k.cupom.primeiraCompra?" Válido só na primeira compra.":""}` : (k.erroCupom || "");
+  const mostraBarra = k.temValor && k.fixo && !k.ret && FRETE.gratisAcima!=null && !(k.cupom && k.cupom.tipo==="frete");
+  $("#progresso").hidden = !mostraBarra;
+  if(mostraBarra){
+    const falta = Math.max(0, Math.round((FRETE.gratisAcima - k.produtos)*100)/100);
+    $("#progresso").classList.toggle("ok", falta===0);
+    $("#progresso-txt").textContent = falta===0 ? "Oba! Você ganhou frete grátis." : `Faltam ${reais(falta)} para o frete grátis`;
+    $("#progresso-barra").style.width = Math.min(100, k.produtos/FRETE.gratisAcima*100) + "%";
+  }
+  $("#resumo").innerHTML = !k.temValor ? "" : `<div><span>Produtos</span><span>${reais(k.soma)}</span></div>`
+    + (k.cupom ? `<div class="desc"><span>Cupom ${k.cupom.codigo}</span><span>${k.cupom.tipo==="frete" ? "frete grátis" : "− "+reais(k.desconto)}</span></div>` : "")
+    + (k.fixo ? `<div><span>Frete</span><span>${k.ret ? "retirada" : k.gratis ? "grátis" : reais(k.frete)}</span></div>` : "");
+  $("#lista-total").textContent = !k.temValor ? "" : k.fixo ? `Total: ${reais(k.total)}` : `Total: ${reais(k.produtos)} + frete conforme o CEP`;
+  if(!k.temValor) pagarPix = false;
+  $("#pix-abrir").hidden = !k.temValor || pagarPix;
+  $("#pix").hidden = !(k.temValor && pagarPix);
+  $("#pix-explica").textContent = !k.fixo ? "Valor dos produtos. O frete é combinado no WhatsApp e pago à parte. Depois de pagar, envie o pedido e o comprovante no WhatsApp."
+    : (k.ret ? "Produtos, com retirada sem frete." : k.frete ? "Produtos + frete." : "Produtos, com frete grátis.") + (k.cupom ? " Desconto do cupom já aplicado." : "") + " Depois de pagar, envie o pedido e o comprovante no WhatsApp.";
+  if(k.temValor && pagarPix) desenharPix(k.total);
 }
 /* ----- Monte seu kit ----- */
 const kitVazio = () => ({qtd:{}, sem:{}, presente:false, cartaoOn:false, cartao:""});
@@ -857,7 +1071,47 @@ document.addEventListener("click", e => {
   e.preventDefault(); abrirKit(el.dataset.abrirKit || "kit");
   $("#produtos").scrollIntoView({behavior:"smooth"});
 });
-const abrirPeloLink = () => { if(location.hash==="#monte-seu-kit") setTimeout(()=>{ abrirKit("kit"); $("#produtos").scrollIntoView(); }, 0); };
+let veioDoCatalogo = false;
+function paginaProduto(id){
+  const p = PRODUTOS.find(x=>x.id===id);
+  const pg = $("#pagina-produto");
+  if(!p){ pg.hidden = true; document.body.style.overflow = ""; return; }
+  let qtd = 1, sel = visiveis(p)[0] || "";
+  const notas = a => ESSENCIAS[a] ? ESSENCIAS[a].notas : "";
+  $("#pg").innerHTML = `
+    <div class="foto">${p.ilustr ? ILUSTR[p.ilustr] : `<img src="${p.foto}" alt="${p.nome}"${p.pos?` style="object-position:${p.pos}"`:""}>`}</div>
+    <div>
+      <span class="linha">${p.linha}</span>
+      <h2>${p.nome}</h2>
+      <p class="desc">${p.desc}</p>
+      <p class="preco">${p.preco ? reais(p.preco) : "Consulte o valor"}</p>
+      <span class="rotulo">Escolha a essência (${p.aromas.length} opções)</span>
+      <div class="aromas">${p.aromas.map(a=>`<button aria-pressed="${a===sel}" data-a="${a}">${a}</button>`).join("")}</div>
+      <p class="nota" id="pg-nota">${notas(sel)}</p>
+      <label class="rotulo" for="pg-obs">Observações (opcional)</label>
+      <textarea id="pg-obs" maxlength="250" placeholder="Ex.: é para presente, recado para o cartão, data que precisa receber..."></textarea>
+      <div class="compra">
+        <span class="qtd"><button type="button" data-q="-1" aria-label="Diminuir">−</button><b id="pg-qtd">1</b><button type="button" data-q="1" aria-label="Aumentar">+</button></span>
+        <button class="botao" type="button" id="pg-add">Adicionar à lista</button>
+      </div>
+    </div>`;
+  $("#pg").querySelectorAll(".aromas button").forEach(b=>b.onclick=()=>{
+    sel = b.dataset.a;
+    $("#pg").querySelectorAll(".aromas button").forEach(x=>x.setAttribute("aria-pressed", x===b));
+    $("#pg-nota").textContent = notas(sel);
+  });
+  $("#pg").querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{ qtd = Math.max(1, qtd + +b.dataset.q); $("#pg-qtd").textContent = qtd; });
+  $("#pg-add").onclick = () => { adicionar(p, sel, qtd, $("#pg-obs").value); $("#pg-obs").value = ""; qtd = 1; $("#pg-qtd").textContent = 1; };
+  pg.hidden = false; pg.scrollTop = 0; document.body.style.overflow = "hidden";
+}
+$("#pg-voltar").onclick = () => { if(veioDoCatalogo) history.back(); else location.hash = "#produtos"; };
+document.addEventListener("click", e => { if(e.target.closest('a[href^="#produto/"]')) veioDoCatalogo = true; });
+const abrirPeloLink = () => {
+  const m = location.hash.match(/^#produto\/(.+)$/);
+  paginaProduto(m ? decodeURIComponent(m[1]) : null);
+  if(!m) veioDoCatalogo = false;
+  if(location.hash==="#monte-seu-kit") setTimeout(()=>{ abrirKit("kit"); $("#produtos").scrollIntoView(); }, 0);
+};
 abrirPeloLink(); window.addEventListener("hashchange", abrirPeloLink);
 
 let t; function aviso(txt){ const el=$("#toast"); el.textContent=txt; el.classList.add("on"); clearTimeout(t); t=setTimeout(()=>el.classList.remove("on"),1800); }
