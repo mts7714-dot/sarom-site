@@ -48,6 +48,8 @@
   .hero .fotos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .hero .fotos img{border-radius:14px;border:1px solid #E0C98A;aspect-ratio:4/5;object-fit:cover;object-position:50% 80%;width:100%}
   .hero .fotos img:first-child{margin-top:36px}
+  .hero .fotos .zoom{border-radius:14px;border:1px solid #E0C98A;overflow:hidden;aspect-ratio:4/5}
+  .hero .fotos .zoom img{border:0;border-radius:0;height:100%;transform:scale(1.55);transform-origin:50% 64%}
   .botao{display:inline-flex;align-items:center;gap:8px;background:var(--marrom);color:#fff;border:0;border-radius:999px;padding:13px 24px;font:500 15px Jost,sans-serif;text-decoration:none;cursor:pointer}
   .botao:hover{background:var(--marrom2)}
   .botao.claro{background:transparent;color:var(--marrom);border:1px solid var(--marrom)}
@@ -352,7 +354,7 @@
     </div>
     <div class="fotos">
       <img src="img/sabonete-morango.jpg" alt="Sabonete artesanal SAROM de morango">
-      <img src="img/vela-gengibre-pimenta.jpg" alt="Vela aromática SAROM de gengibre e pimenta">
+      <div class="zoom"><img src="img/vela-gengibre-pimenta.jpg" alt="Vela aromática SAROM de gengibre e pimenta"></div>
     </div>
   </div></div>
 
